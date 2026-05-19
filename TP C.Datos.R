@@ -1,6 +1,5 @@
 #Trabajo grupal Ciencia de Datos
 #Integrantes: Ramos 910867 y Estrada 912785
-setwd("C:/Users/estra/Desktop/Ciencia de datos 2026/TP ciencia de datos")
 getwd()
 instub <- 'raw'
 outstub <- 'input'
@@ -50,4 +49,5 @@ empleo_sector <- empleo_long %>%                     #notar que pierdo observaci
   filter(es_sector)  
 View(empleo_sector)
 
+#falta filtrar los servicios
 
