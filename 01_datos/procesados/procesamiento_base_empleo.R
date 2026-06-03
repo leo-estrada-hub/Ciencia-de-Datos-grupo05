@@ -4,14 +4,11 @@ library(tidyverse)
 library(readxl) 
 library(janitor)   
 
-#puse mi wd (abajo pone el tuyo) para que cuando codeemos, lo activemos 
-#y luego al poner path relativos agarre este wd
-setwd(r'(C:\Users\sebas\OneDrive\Imágenes\UBA\Cs_de_datos\mi_proyecto)')
 
 #automatizo ruta de importacion de datos
-instub <- '1_datos/crudos'
+instub <- '01_datos/crudos'
 
-ruta_csv <- file.path(instub,'provinciales_serie_empleo_anual_2.xlsx')
+ruta_csv <- file.path(instub,'serie empleo.xlsx')
 
 empleo <- read_xlsx(ruta_csv ,
                    sheet = "T5",
@@ -60,7 +57,7 @@ empleo_sector <- empleo_long %>%
   filter(es_sector) %>% 
   select(-(es_sector)) %>% 
   #le saco las x a los anios
-  mutate(anio = str_remove(anio,"x")) %>% 
+  mutate(anio = as.integer(str_remove(anio, "x"))) %>% 
   #filtro de anio 2004 a 2024 para que quede homogeneo a la otra tabla
   filter(anio %in% 2004:2024) %>% 
   rename(sector_agregado = provincia_en_la_que_declara_empleo) %>% 
@@ -79,7 +76,7 @@ empleo_sector <- empleo_long %>%
   ) 
 
 #guardo archivo para usarlo posteriormente
-saveRDS(empleo_sector, "1_datos/procesados/empleo_sector.rds")
+saveRDS(empleo_sector, "01_datos/procesados/empleo_sector.rds")
 
 
 
