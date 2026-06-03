@@ -6,7 +6,7 @@ library(janitor)
 
 options(scipen = 999)
 
-instub <- '1_datos/crudos'
+instub <- '01_datos/crudos'
 
 ruta_csv <- file.path(instub,'14_Jurisdiccion_52sectores.xlsx')
 
@@ -133,11 +133,14 @@ vab_total_horiz <- vab_total %>%
     cols = -(c(sector_agregado,provincia)),
     names_to = "anio",
     values_to = "vab"
+  )%>%
+  mutate(
+    anio = as.integer(anio)
   )
 
 #guardo resultado para no correr toda la funcion
 
-saveRDS(vab_total_horiz, "1_datos/procesados/vab_total_horiz.rds")
+saveRDS(vab_total_horiz, "01_datos/procesados/vab_total_horiz.rds")
 
 
 
