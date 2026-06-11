@@ -231,7 +231,7 @@ empleo_total <-
     anio
   )
 
-saveRDS(empleo_total, "01_datos/procesados/empleo_sector.rds")
+saveRDS(empleo_total, "01_datos/procesados/rds/empleo_sector.rds")
 
 
 
