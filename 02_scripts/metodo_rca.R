@@ -1,4 +1,4 @@
-tabla_rca <- readRDS("01_datos/procesados/tabla_procesados_final.rds")
+tabla_rca <- readRDS("01_datos/procesados/rds/tabla_procesados_final.rds")
 
 calculo_rca <- function(df){
   
@@ -24,4 +24,4 @@ calculo_rca <- function(df){
 }
 tabla_rca <- calculo_rca(tabla_rca)  #ahora la tabla contiene el rca y demas variables auxiliares 
 
-saveRDS(tabla_rca,"01_datos/procesados/tabla_rca.rds")
+saveRDS(tabla_rca,"02_scripts/rds/tabla_rca.rds")
