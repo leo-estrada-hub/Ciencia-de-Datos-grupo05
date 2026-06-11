@@ -129,7 +129,7 @@ vab_total_horiz <- vab_total %>%
   mutate(anio = as.integer(anio))
 #guardo resultado para no correr toda la funcion
 
-saveRDS(vab_total_horiz, "01_datos/procesados/vab_total_horiz.rds")
+saveRDS(vab_total_horiz, "01_datos/procesados/rds/vab_total_horiz.rds")
 
 
 
