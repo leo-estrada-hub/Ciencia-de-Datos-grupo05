@@ -2,7 +2,7 @@
 
 library(tidyverse)
 
-tabla_rca <- readRDS("01_datos/procesados/tabla_rca.rds") #utilizamos el rds del rca ya construido
+tabla_rca <- readRDS("02_scripts/rds/tabla_rca.rds") #utilizamos el rds del rca ya construido
 
 
 rca_promedio <- tabla_rca %>%  #generamos un promedio de los rca a lo largo de los 21 años (2004 a 2024)
