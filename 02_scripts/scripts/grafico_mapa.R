@@ -116,8 +116,8 @@ ggsave("mapa variacion empleo.png", g_mapa,
        width =10,height = 12,dpi = 300, bg = "white")
 
 print(g_mapa)
-quantile(mapa_datos$variacion_pct, 0.95, na.rm = TRUE)
-max(mapa_datos$variacion_pct, na.rm = TRUE)
+
+
 
 
 
