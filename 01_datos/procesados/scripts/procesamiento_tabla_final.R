@@ -1,10 +1,6 @@
 #Procesamiento tabla final
 
 library(tidyverse)   
-library(readxl) 
-library(janitor)   
-
-options(scipen = 999)
 
 #descargo ambas bases
 vab_df <- readRDS("01_datos/procesados/rds/vab_total_horiz.rds")
