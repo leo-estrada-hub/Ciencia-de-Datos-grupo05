@@ -35,7 +35,8 @@ empleo_mapa <- empleo_vc %>%
     empleo_2024 = `2024`
   ) %>%
   mutate(
-    variacion_log = log(empleo_2024) - log(empleo_2004) #creamos la variación en logaritmos
+    #variacion_log = log(empleo_2024) - log(empleo_2004) #creamos la variación en logaritmos
+    variacion_pct = (empleo_2024 / empleo_2004 - 1) * 100
   )
 
 # NOTA: La variación se expresa en logaritmos porque la regresión propuesta que
@@ -102,11 +103,16 @@ titulo_mapa <- "¿Cómo cambió el empleo en los sectores más competitivos de c
 
 g_mapa <- ggplot(mapa_datos) +
   
-  geom_sf(aes(fill = variacion_log), colour = "white", linewidth = 0.2) +
+  geom_sf(aes(fill = variacion_pct), colour = "white", linewidth = 0.2) +
   
-  scale_fill_fermenter(palette = "Blues", direction = 1, n.breaks = 5 ,
-                       name = "Variación del empleo") +
-  
+  #scale_fill_fermenter(palette = "Blues", direction = 1, n.breaks = 5 ,
+                      # name = "Variación del empleo") 
+  scale_fill_gradient(
+    low = "#deebf7",
+    high = "#08306b",
+    limits = c(0, quantile(mapa_datos$variacion_pct, 0.95, na.rm = TRUE)),
+    oob = scales::squish
+  )+
   coord_sf(expand = FALSE) +
   labs(title = titulo_mapa,
        subtitle ="Variación del empleo entre 2004 y 2024 de los sectores con RCA promedio mayor a 1",
@@ -120,7 +126,7 @@ g_mapa <- ggplot(mapa_datos) +
 ggsave("mapa variacion empleo.png", g_mapa,
        width =10,height = 12,dpi = 300, bg = "white")
 
-
+print(g_mapa)
 
 
 
