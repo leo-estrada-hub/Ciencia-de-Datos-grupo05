@@ -8,9 +8,6 @@ library(car)        # vif()
 options(scipen = 999)
 theme_set(theme_minimal(base_size = 12))
 
-
-setwd(r'(C:\Users\sebas\OneDrive\Imágenes\UBA\Cs_de_datos\mi_proyecto)')
-
 base <- readRDS('02_scripts/rds/tabla_rca.rds')
 
 
@@ -42,6 +39,11 @@ sum(is.na(base_regresion$empleo))
 sum(base_regresion$empleo <= 0, na.rm = TRUE)
 #aproximadamente 4000
 
+mean(base_regresion$vab == 0, na.rm = TRUE)
+mean(base_regresion$empleo == 0, na.rm = TRUE)
+#vemos cuanto representan esos datos en cada variable
+
+
 #limpio la base
 base_regresion_limpia <- base_regresion %>%
   filter(
@@ -50,6 +52,27 @@ base_regresion_limpia <- base_regresion %>%
     vab > 0,
     empleo > 0
   )
+#Grafico exploratorio
+ggplot(
+  base_regresion_limpia,
+  aes(
+    x = log(vab),
+    y = log(empleo),
+    color = factor(dummy_rca)
+  )
+  +
+    geom_point(alpha = 0.03, size(0.6) +
+                 geom_smooth(method = "lm", se = FALSE, linewidth = 1.2) +
+                 labs(
+                   x = "log(VAB)",
+                   y = "log(Empleo)",
+                   color = "RCA"
+                 ) + scale_color_manual(
+                   values = c("grey70", "#1f77b4"),
+                   labels = c("RCA ≤ 1", "RCA > 1")
+                 )
+
+
 #hago regresion
 base_regresion_limpia %>% 
   ggplot(aes(vab,empleo)) +
@@ -78,7 +101,7 @@ bind_rows(
   select(modelo, r.squared, adj.r.squared, sigma, AIC, BIC)
 
 
-#ANIADO DUMMIE RCA (que no es binaria; 0 o 1)
+#AÑADO DUMMIE RCA (que es binaria; 0 o 1)
 
 #creo dummy para rca>1 y agrego a base
 base_regresion_limpia <- base_regresion_limpia %>%
@@ -103,10 +126,14 @@ vif(modelo_con_dummie)
 #AGREGO VAB*RCA
 
 modelo_completo <- lm(
-  log(empleo) ~ log(vab) + dummy_rca + I(rca * dummy_rca),
-  data = base_regresion_limpia
-)
+  log(empleo) ~ log(vab) + dummy_rca + log(vab) * dummy_rca , 
+ data = base_regresion_limpia
+  )
 summary(modelo_completo)
+#el resumen demuestra que El efecto del VAB sobre el empleo es 
+#aproximadamente 0,14 puntos mayor en los sectores con ventaja 
+#comparativa que en los sectores sin ventaja comparativa.
+
 
 bind_rows(
   glance(modelo_con_dummie)   |> mutate(modelo = "con dummie"),
@@ -117,3 +144,23 @@ bind_rows(
 #veo cuanto me da de multicolinealidad
 vif(modelo_completo)
 #claramente el modelo completo es el que mejor ajusta
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
