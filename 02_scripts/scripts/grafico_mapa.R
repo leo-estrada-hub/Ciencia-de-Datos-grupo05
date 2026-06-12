@@ -96,6 +96,7 @@ g_mapa <- ggplot(mapa_datos) +
   
   geom_sf(aes(fill = variacion_pct), colour = "white", linewidth = 0.2) +
   scale_fill_gradient(
+    name = "Variación del empleo (%)",
     low = "#deebf7",
     high = "#08306b",
     limits = c(0, quantile(mapa_datos$variacion_pct, 0.95, na.rm = TRUE)),
@@ -115,8 +116,8 @@ ggsave("mapa variacion empleo.png", g_mapa,
        width =10,height = 12,dpi = 300, bg = "white")
 
 print(g_mapa)
-
-
+quantile(mapa_datos$variacion_pct, 0.95, na.rm = TRUE)
+max(mapa_datos$variacion_pct, na.rm = TRUE)
 
 
 
