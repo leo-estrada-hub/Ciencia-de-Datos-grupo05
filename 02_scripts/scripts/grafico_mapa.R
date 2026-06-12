@@ -34,16 +34,7 @@ empleo_mapa <- empleo_vc %>%
     empleo_2004 = `2004`, #renombramos ambas columnas  
     empleo_2024 = `2024`
   ) %>%
-  mutate(
-    #variacion_log = log(empleo_2024) - log(empleo_2004) #creamos la variación en logaritmos
-    variacion_pct = (empleo_2024 / empleo_2004 - 1) * 100
-  )
-
-# NOTA: La variación se expresa en logaritmos porque la regresión propuesta que
-# se estima para contrastar la hipótesis utiliza una especificación logarítmica.
-# De esta manera, el indicador representado en el mapa es consistente con la
-# interpretación de la regresión y refleja el crecimiento relativo del empleo.
-
+  mutate(  variacion_pct = (empleo_2024 / empleo_2004 - 1) * 100)
 
 #creación del mapa
 
@@ -104,9 +95,6 @@ titulo_mapa <- "¿Cómo cambió el empleo en los sectores más competitivos de c
 g_mapa <- ggplot(mapa_datos) +
   
   geom_sf(aes(fill = variacion_pct), colour = "white", linewidth = 0.2) +
-  
-  #scale_fill_fermenter(palette = "Blues", direction = 1, n.breaks = 5 ,
-                      # name = "Variación del empleo") 
   scale_fill_gradient(
     low = "#deebf7",
     high = "#08306b",
