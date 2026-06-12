@@ -116,4 +116,4 @@ bind_rows(
 
 #veo cuanto me da de multicolinealidad
 vif(modelo_completo)
-
+#claramente el modelo completo es el que mejor ajusta
