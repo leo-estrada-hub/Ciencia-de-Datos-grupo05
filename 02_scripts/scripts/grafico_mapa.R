@@ -1,30 +1,34 @@
 #creación de la variación del empleo 
 
 #Para el mapa 
+#1
 library(tidyverse)
 library(sf)
 library(geoAr)
 library(ggtext)
 library(scales)
 
+#2
 tabla_rca <- readRDS("02_scripts/rds/base_filtrada.rds") #utilizamos el rds del rca ya construido
 
-
+#3
 rca_promedio <- tabla_rca %>%  #generamos un promedio de los rca a lo largo de los 21 años (2004 a 2024)
   group_by(provincia, sector) %>%
   summarise(
     rca_promedio = mean(rca, na.rm = TRUE),
     .groups = "drop"
   )
+#4
 sectores_vc <- rca_promedio %>%
   filter(rca_promedio > 1) #nos quedamos con los promedios mayores a 1 y diremos que tuvieron ventaja comparativa en promedio
-
+#5
 empleo_vc <- tabla_rca %>%
   filter(anio %in% c(2004, 2024)) %>% #filtramos por los años extremos de la tabla
   inner_join(
     sectores_vc,
     by = c("provincia", "sector") #juntamos ambas tablas conservando solo los sectores de la tabla sectores_rca
   )
+#6
 empleo_mapa <- empleo_vc %>%
   group_by(provincia, anio) %>%
   summarise(
@@ -43,9 +47,9 @@ empleo_mapa <- empleo_vc %>%
 
 #creación del mapa
 
-
+#7
 cap <- "Datos: elaboración propia en base a VAB provincial y empleo registrado." 
-
+#8
 theme_owid_map <- function(base_size = 13) {
   theme_void(base_size = base_size) +
     theme(
@@ -67,29 +71,22 @@ theme_owid_map <- function(base_size = 13) {
       plot.margin     = margin(14, 16, 10, 16)
     )
 }
-
-# -----------------------------------------------------------------------------
-# 1) GEOMETRIA PROVINCIAL  (geoAr + recorte para sacar la Antartida y
-#    conservar el continente, Malvinas y Tierra del Fuego)
-# -----------------------------------------------------------------------------
-
-
+#9
 arg <- get_geo("ARGENTINA", level = "provincia") %>%
   add_geo_codes() %>%
   st_make_valid()
-
+#10
 arg <- st_crop(arg, st_bbox(c(xmin = -90, xmax = -40, ymin = -55, ymax = -5),
                             crs = st_crs(arg)))
-
+#11
 mapa_datos <- arg %>%
   left_join (empleo_mapa,
              by = c("name_iso" = "provincia")
   )
-
+#12
 titulo_mapa <- "¿Cómo cambió el empleo en los sectores más competitivos de cada provincia?"  
-
+#13
 g_mapa <- ggplot(mapa_datos) +
-  
   geom_sf(aes(fill = variacion_pct), colour = "white", linewidth = 0.2) +  #leyenda y barra de colores
   scale_fill_gradient(
     name = "Variación del empleo (%)",
@@ -103,10 +100,9 @@ g_mapa <- ggplot(mapa_datos) +
        subtitle ="Variación del empleo entre 2004 y 2024 de los sectores con RCA promedio mayor a 1",
        caption = cap) +
   theme_owid_map() +
-   
   guides(fill = guide_colorsteps(barwidth = 14, barheight = 0.5,
                                  title.position = "top", title.hjust = 0.5))
-
+#14
 g_mapa +  #creación de flecha
   geom_curve(
     x = -76.8,   
@@ -118,7 +114,7 @@ g_mapa +  #creación de flecha
     colour = "#08306b",
     arrow = arrow(length = unit(0.20, "cm"))
   ) +
-  annotate( #creación de comentario
+  annotate( #creación de comentarios
     "label",
     x = -81,
     y = -24.4,
@@ -137,10 +133,6 @@ g_mapa +  #creación de flecha
     size = 3.5,
     fontface = "bold"
   )
-
-
-ggsave("C:/Users/estra/Desktop/tercera_entrega_5/mapa variacion empleo.png", g_mapa,
-       width =10,height = 12,dpi = 300, bg = "white")
 
 
 
