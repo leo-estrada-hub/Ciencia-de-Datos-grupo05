@@ -2,11 +2,11 @@
 
 library(tidyverse)
 
-tabla_rca <- readRDS("02_scripts/rds/tabla_rca.rds") #utilizamos el rds del rca ya construido
+tabla_rca <- readRDS("02_scripts/rds/base_filtrada.rds") #utilizamos el rds del rca ya construido
 
 
 rca_promedio <- tabla_rca %>%  #generamos un promedio de los rca a lo largo de los 21 años (2004 a 2024)
-  group_by(provincia, sector_agregado) %>%
+  group_by(provincia, sector) %>%
   summarise(
     rca_promedio = mean(rca, na.rm = TRUE),
     .groups = "drop"
@@ -18,12 +18,12 @@ empleo_vc <- tabla_rca %>%
   filter(anio %in% c(2004, 2024)) %>% #filtramos por los años extremos de la tabla
   inner_join(
     sectores_vc,
-    by = c("provincia", "sector_agregado") #juntamos ambas tablas conservando solo los sectores de la tabla sectores_rca
+    by = c("provincia", "sector") #juntamos ambas tablas conservando solo los sectores de la tabla sectores_rca
   )
 empleo_mapa <- empleo_vc %>%
   group_by(provincia, anio) %>%
   summarise(
-    empleo_total_vc = sum(empleo_registrado, na.rm = TRUE),
+    empleo_total_vc = sum(empleo, na.rm = TRUE),
     .groups = "drop" #sumamos los empleos de cada sector acorde al año y provincia 
   ) %>%
   pivot_wider(
@@ -71,6 +71,10 @@ theme_owid_map <- function(base_size = 13) {
     )
 }
 
+arg %>%
+  filter(name_iso == "Catamarca") %>%
+  st_centroid() %>%
+  st_coordinates()
 
 # -----------------------------------------------------------------------------
 # 1) GEOMETRIA PROVINCIAL  (geoAr + recorte para sacar la Antartida y
@@ -80,7 +84,7 @@ arg <- get_geo("ARGENTINA", level = "provincia") %>%
   add_geo_codes() %>%
   st_make_valid()
 
-arg <- st_crop(arg, st_bbox(c(xmin = -74, xmax = -52, ymin = -56, ymax = -21),
+arg <- st_crop(arg, st_bbox(c(xmin = -90, xmax = -40, ymin = -55, ymax = -5),
                             crs = st_crs(arg)))
 
 
@@ -111,11 +115,31 @@ g_mapa <- ggplot(mapa_datos) +
   guides(fill = guide_colorsteps(barwidth = 14, barheight = 0.5,
                                  title.position = "top", title.hjust = 0.5))
 
+g_mapa +
+  geom_curve(
+    x = -76.8,   
+    y = -26,
+    xend = -70,
+    yend = -27,
+    curvature = 0.15,
+    linewidth = 0.7,
+    colour = "#08306b",
+    arrow = arrow(length = unit(0.20, "cm"))
+  ) +
+  annotate(
+    "label",
+    x = -81,
+    y = -24.4,
+    label = "Catamarca\nMayor crecimiento\n(+108%)",
+    hjust = 0,
+    size = 4,
+    fontface = "bold"
+  )
+
 
 ggsave("C:/Users/estra/Desktop/tercera_entrega_5/mapa variacion empleo.png", g_mapa,
        width =10,height = 12,dpi = 300, bg = "white")
 
-print(g_mapa)
 
 
 
