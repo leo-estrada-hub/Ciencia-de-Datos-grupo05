@@ -1,7 +1,9 @@
 #Grafico exploratorio
+#1
 library(tidyverse)
+#2
 base <- readRDS("02_scripts/rds/tabla_rca.rds")
-
+#3
 base_plot <- base %>%
   rename(empleo = empleo_registrado) %>%
   select(vab, empleo, rca) %>%
@@ -16,9 +18,8 @@ base_plot <- base %>%
       if_else(rca > 1, 1, 0),
       levels = c(0, 1),
       labels = c("RCA ≤ 1", "RCA > 1")
-    )
-  )
-
+    ))
+#4
 g_rca <- ggplot(
   base_plot,
   aes(
@@ -37,9 +38,8 @@ g_rca <- ggplot(
     values = c("RCA ≤ 1" = "#7A7A7A",  
                "RCA > 1" = "#0072B2")   
   ) 
-
+#5
 print(g_rca)
 
-ggsave("C:/Users/estra/Desktop/tercera_entrega_5/scatter_vab_empleo.png", plot = g_rca , width = 8, height = 6, dpi = 300)
 
 
