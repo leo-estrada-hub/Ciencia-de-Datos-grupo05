@@ -132,7 +132,7 @@ g_mapa +  #creación de flecha
     x = -84,
     y = -34,
     label =
-      "La mayoría de las provincias\nregistró aumentos de empleo.\n\nLa magnitud del crecimiento\nfue diferente entre provincias.",
+      "La mayoría de las provincias\nregistró aumentos de empleo.\nSin embargo, la magnitud del\n crecimiento fue diferente \n entre provincias.",
     hjust = 0,
     size = 3.5,
     fontface = "bold"
