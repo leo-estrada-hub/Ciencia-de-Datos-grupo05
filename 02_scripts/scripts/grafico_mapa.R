@@ -112,11 +112,10 @@ g_mapa <- ggplot(mapa_datos) +
                                  title.position = "top", title.hjust = 0.5))
 
 
-ggsave("mapa variacion empleo.png", g_mapa,
+ggsave("C:/Users/estra/Desktop/tercera_entrega_5/mapa variacion empleo.png", g_mapa,
        width =10,height = 12,dpi = 300, bg = "white")
 
 print(g_mapa)
-
 
 
 
