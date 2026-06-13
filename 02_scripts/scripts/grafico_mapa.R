@@ -50,7 +50,7 @@ empleo_mapa <- empleo_vc %>%
 #7
 cap <- "Datos: elaboración propia en base a VAB provincial y empleo registrado." 
 #8
-theme_owid_map <- function(base_size = 13) {
+theme_owid_map <- function(base_size = 13) { #configuración estándar del tema del gráfico
   theme_void(base_size = base_size) +
     theme(
       plot.title.position   = "plot",
@@ -95,7 +95,7 @@ g_mapa <- ggplot(mapa_datos) +
     limits = c(0, quantile(mapa_datos$variacion_pct, 0.95, na.rm = TRUE)),
     oob = scales::squish
   )+
-  coord_sf(expand = FALSE) + 
+  coord_sf(expand = FALSE) + #no expande el gráfico
   labs(title = titulo_mapa,
        subtitle ="Variación del empleo entre 2004 y 2024 de los sectores con RCA promedio mayor a 1",
        caption = cap) +
