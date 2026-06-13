@@ -45,9 +45,7 @@ library(ggtext)
 library(scales)
 
 
-cap <- "Datos: elaboración propia en base a VAB provincial y empleo registrado.
-Para cada provincia se agregan todos los sectores con RCA promedio (2004-2024) > 1.
-La variable representada corresponde a la variación del empleo entre 2004 y 2024." 
+cap <- "Datos: elaboración propia en base a VAB provincial y empleo registrado." 
 
 theme_owid_map <- function(base_size = 13) {
   theme_void(base_size = base_size) +
@@ -71,15 +69,12 @@ theme_owid_map <- function(base_size = 13) {
     )
 }
 
-arg %>%
-  filter(name_iso == "Catamarca") %>%
-  st_centroid() %>%
-  st_coordinates()
-
 # -----------------------------------------------------------------------------
 # 1) GEOMETRIA PROVINCIAL  (geoAr + recorte para sacar la Antartida y
 #    conservar el continente, Malvinas y Tierra del Fuego)
 # -----------------------------------------------------------------------------
+
+
 arg <- get_geo("ARGENTINA", level = "provincia") %>%
   add_geo_codes() %>%
   st_make_valid()
@@ -87,18 +82,16 @@ arg <- get_geo("ARGENTINA", level = "provincia") %>%
 arg <- st_crop(arg, st_bbox(c(xmin = -90, xmax = -40, ymin = -55, ymax = -5),
                             crs = st_crs(arg)))
 
-
 mapa_datos <- arg %>%
   left_join (empleo_mapa,
              by = c("name_iso" = "provincia")
   )
 
-
 titulo_mapa <- "¿Cómo cambió el empleo en los sectores más competitivos de cada provincia?"  
 
 g_mapa <- ggplot(mapa_datos) +
   
-  geom_sf(aes(fill = variacion_pct), colour = "white", linewidth = 0.2) +
+  geom_sf(aes(fill = variacion_pct), colour = "white", linewidth = 0.2) +  #leyenda y barra de colores
   scale_fill_gradient(
     name = "Variación del empleo (%)",
     low = "#deebf7",
@@ -106,7 +99,7 @@ g_mapa <- ggplot(mapa_datos) +
     limits = c(0, quantile(mapa_datos$variacion_pct, 0.95, na.rm = TRUE)),
     oob = scales::squish
   )+
-  coord_sf(expand = FALSE) +
+  coord_sf(expand = FALSE) + 
   labs(title = titulo_mapa,
        subtitle ="Variación del empleo entre 2004 y 2024 de los sectores con RCA promedio mayor a 1",
        caption = cap) +
@@ -115,7 +108,7 @@ g_mapa <- ggplot(mapa_datos) +
   guides(fill = guide_colorsteps(barwidth = 14, barheight = 0.5,
                                  title.position = "top", title.hjust = 0.5))
 
-g_mapa +
+g_mapa +  #creación de flecha
   geom_curve(
     x = -76.8,   
     y = -26,
@@ -126,11 +119,11 @@ g_mapa +
     colour = "#08306b",
     arrow = arrow(length = unit(0.20, "cm"))
   ) +
-  annotate(
+  annotate( #creación de comentario
     "label",
     x = -81,
     y = -24.4,
-    label = "Catamarca\nMayor crecimiento\n(+108%)",
+    label = "    Catamarca lideró\nel crecimiento del empleo\n           (+108%)",
     hjust = 0,
     size = 4,
     fontface = "bold"
