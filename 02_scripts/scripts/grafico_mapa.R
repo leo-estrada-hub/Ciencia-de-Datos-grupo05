@@ -126,6 +126,16 @@ g_mapa +  #creación de flecha
     hjust = 0,
     size = 4,
     fontface = "bold"
+  )+
+  annotate(
+    "label",
+    x = -84,
+    y = -34,
+    label =
+      "La mayoría de las provincias\nregistró aumentos de empleo.\n\nLa magnitud del crecimiento\nfue diferente entre provincias.",
+    hjust = 0,
+    size = 3.5,
+    fontface = "bold"
   )
 
 
