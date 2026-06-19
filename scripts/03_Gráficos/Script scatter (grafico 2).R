@@ -2,10 +2,9 @@
 #1
 library(tidyverse)
 #2
-base <- readRDS("02_scripts/rds/tabla_rca.rds")
+base <- readRDS("input/base_filtrada.rds")
 #3
-base_plot <- base %>%
-  rename(empleo = empleo_registrado) %>% 
+base_plot <- base %>% 
   select(vab, empleo, rca) %>% #trabajamos solo con estas columnas 
   filter(
     !is.na(vab),

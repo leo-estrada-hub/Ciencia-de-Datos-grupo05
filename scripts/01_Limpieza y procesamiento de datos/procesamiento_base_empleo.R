@@ -7,7 +7,7 @@ library(janitor)
 
 options(scipen = 999)
 
-instub <- '01_datos/crudos'
+instub <- 'raw'
 
 ruta_excel <- file.path(instub,'provinciales_serie_empleo_trimestral_2dig_5.xlsx')
 
@@ -145,7 +145,7 @@ empleo_total <-
   empleo_total %>%
   mutate(
     provincia =
-      recode(
+      dplyr::recode(
         provincia,
         "Cordoba"="Córdoba",
         "Entre Rios"="Entre Ríos",
@@ -231,7 +231,7 @@ empleo_total <-
     anio
   )
 
-saveRDS(empleo_total, "01_datos/procesados/rds/empleo_sector.rds")
+saveRDS(empleo_total, "input/empleo_sector.rds")
 
 
 

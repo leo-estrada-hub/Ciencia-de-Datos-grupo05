@@ -9,7 +9,7 @@ library(ggtext)
 library(scales)
 
 #2
-tabla_rca <- readRDS("02_scripts/rds/base_filtrada.rds") #utilizamos el rds del rca ya construido
+tabla_rca <- readRDS("input/base_filtrada.rds") #utilizamos el rds del rca ya construido
 
 #3
 rca_promedio <- tabla_rca %>%  #generamos un promedio de los rca a lo largo de los 21 años (2004 a 2024)

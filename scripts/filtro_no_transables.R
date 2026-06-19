@@ -1,6 +1,6 @@
 library(tidyverse)
 
-base <- readRDS('02_scripts/rds/tabla_rca.rds')
+base <- readRDS("input/tabla_rca.rds")
 
 #EMPIEZA LIMPIEZA
 
@@ -33,4 +33,4 @@ sectores_no_transables <- c(
 base_limpia <- base_limpia %>%
   filter(!sector %in% sectores_no_transables)
 
-saveRDS(base_limpia, "02_scripts/rds/base_filtrada.rds")
+saveRDS(base_limpia, "input/base_filtrada.rds")
