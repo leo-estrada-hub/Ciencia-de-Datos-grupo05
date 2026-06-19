@@ -2,7 +2,7 @@
 #1
 library(tidyverse)
 #2
-base <- readRDS("input/base_filtrada.rds")
+base <- readRDS("02_input/base_filtrada.rds")
 #3
 base_plot <- base %>% 
   select(vab, empleo, rca) %>% #trabajamos solo con estas columnas 

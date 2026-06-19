@@ -7,7 +7,7 @@ library(janitor)
 
 options(scipen = 999)
 
-instub <- 'raw'
+instub <- '01_raw'
 
 ruta_excel <- file.path(instub,'provinciales_serie_empleo_trimestral_2dig_5.xlsx')
 
@@ -231,7 +231,7 @@ empleo_total <-
     anio
   )
 
-saveRDS(empleo_total, "input/empleo_sector.rds")
+saveRDS(empleo_total, "02_input/empleo_sector.rds")
 
 
 
