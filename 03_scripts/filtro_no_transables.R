@@ -29,7 +29,7 @@ sectores_no_transables <- c(
   "Eliminación de desperdicios y aguas residuales, saneamiento y servicios similares",
   "Servicios culturales y deportivos. Otras actividades"
 )
-
+unique(base_filtrada$sector)
 base_limpia <- base_limpia %>%
   filter(!sector %in% sectores_no_transables)
 
