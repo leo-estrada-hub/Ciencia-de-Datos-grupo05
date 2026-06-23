@@ -59,10 +59,4 @@ min(base_plot$vab)
 # de las variables y mejorar la interpretación visual del gráfico.
 
 
-ggsave(
-  filename = "04_output/imagen_grafico_scatter_plot.png",
-  width = 10,
-  height = 7,
-  dpi = 300,
-  bg = "white"
-)
+ggsave("04_output/scatter_vab_empleo.png", plot = g_rca , width = 8, height = 6, dpi = 300)
