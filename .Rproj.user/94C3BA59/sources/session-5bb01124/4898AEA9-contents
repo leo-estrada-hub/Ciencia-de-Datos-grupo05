@@ -9,7 +9,7 @@ library(gt)
 options(scipen = 999)
 theme_set(theme_minimal(base_size = 12))
 
-base <- readRDS('02_input/base_filtrada.rds')
+base <- readRDS('02_input/tabla_rca.rds')
 
 
 #renombro por comodidad

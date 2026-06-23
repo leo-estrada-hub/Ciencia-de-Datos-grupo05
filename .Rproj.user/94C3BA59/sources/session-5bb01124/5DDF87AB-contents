@@ -120,7 +120,7 @@ g_mapa <- g_mapa +  #creación de flecha
     "label",
     x = -81,
     y = -24.4,
-    label = "    Por ejemplo Catamarca\nque su crecimiento en empleo\n        fue del (+142%)",
+    label = " Por ejemplo Catamarca\n que su crecimiento en \n empleo fue del 142%",
     hjust = 0,
     size = 4,
     fontface = "bold"

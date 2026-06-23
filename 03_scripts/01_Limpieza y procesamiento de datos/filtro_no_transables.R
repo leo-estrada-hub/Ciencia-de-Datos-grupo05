@@ -18,18 +18,19 @@ base_limpia <- base %>%
   )
 
 sectores_no_transables <- c(
-  "Reciclamiento",
-  "Electricidad, gas y agua",
-  "Captación , depuración y distribución de agua",
   "Construcción",
-  "Comercio mayorista, minorista y reparaciones",
-  "Servicios de hoteleria y restaurantes",
+  "Infraestructura",
+  "Enseñanza",
+  "Servicios sociales y de salud",
   "Transporte",
+  "Comercio mayorista, minorista y reparaciones",
   "Comunicaciones",
-  "Eliminación de desperdicios y aguas residuales, saneamiento y servicios similares",
-  "Servicios culturales y deportivos. Otras actividades"
-)
-unique(base_filtrada$sector)
+  "Servicios financieros",
+  "Edición e impresión; reproducción de grabaciones",
+  "Servicios de hoteleria y restaurantes"
+  )
+
+unique(base_limpia$sector)
 base_limpia <- base_limpia %>%
   filter(!sector %in% sectores_no_transables)
 

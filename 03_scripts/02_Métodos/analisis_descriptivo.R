@@ -1,7 +1,7 @@
 library(tidyverse)
-
+options(scipen = 999)
 #1
-tabla_rca <- readRDS("02_scripts/rds/base_filtrada.rds")
+tabla_rca <- readRDS("02_input/base_filtrada.rds")
 nrow(tabla_rca)
 
 #creamos rca promedio
@@ -119,8 +119,7 @@ c_hhi_2024 %>%
   summarise(
     media = round(mean(hhi_2024, na.rm = TRUE), 2),
     mediana = round(median(hhi_2024, na.rm = TRUE), 2),
-    desvio_estandar = round(sd(hhi_2024, na.rm = TRUE), 2)
-  )
+    desvio_estandar = round(sd(hhi_2024, na.rm = TRUE), 2))
 
     
 
@@ -163,8 +162,7 @@ dif_empleo %>%
   summarise(
     media = round(mean(empleo_2024, na.rm = TRUE), 2),
     mediana = round(median(empleo_2024, na.rm = TRUE), 2),
-    desvio_estandar = round(sd(empleo_2024, na.rm = TRUE), 2)
-  )
+    desvio_estandar = round(sd(empleo_2024, na.rm = TRUE), 2))
 
 
 
