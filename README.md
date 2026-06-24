@@ -64,22 +64,22 @@ TP-ciencia-de-datos/
 ### Paquetes necesarios
 
 ```r
-install.packages(c("tidyverse", "readxl", "scales", "janitor", "broom", "lmtest", "sandwich", "car", "ggplot2", "gt", "sf", "geoAr", "ggtext"))
+install.packages(c("tidyverse", "readxl", "scales", "janitor", "broom", "lmtest", "sandwich", "car", "gt", "sf", "geoAr", "ggtext"))
 ```
 
 ### Orden de ejecución
 
-1. Limpieza
+# 1. Limpieza
    1.`03_script/01_limpieza_y_procesamiento_de_datos.R/01_procesamiento_base_vab` — Lee la base en `raw/` del VAB provincial .
    2.`03_script/01_limpieza_y_procesamiento_de_datos.R/02_procesamiento_base_empleo` — Lee la base en `raw/` del empleo provincial (arrancar con paso 1.1. o 1.2. es indiferente).
    3.`03_script/01_limpieza_y_procesamiento_de_datos.R/03_procesamiento_tabla_final` — Lee las bases procesadas de empleo y VAB, unifica servicios y crea tabla unificada
-2. Metodos
+# 2. Metodos
    1.`03_script/02_metodos/01_metodo_rca.R` — Crea tabla con cálculo de RCA
    2.`03_script/02_metodos/02_filtro_no_transables.R` — Saca de la tabla todos los servicios
    3.`03_script/02_metodos/03_metodo_regresion.R` — Analsis de regresión
-3. Exploratorio
+# 3. Exploratorio
    1.`03_script/03_exploratorio/analisis_descriptivo.R` — Crea tabla con cálculo de RCA
-4.Graficos
+# 4.Graficos
    1.`03_script/04_graficos/grafico_mapa.R` — Crea grafico mapa
    2.`03_script/04_graficos/grafico_scatter_plot.R` — Crea grafico scatter (indiferente el orden cuando se corre)
 
