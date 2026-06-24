@@ -1,15 +1,15 @@
 # Relación positiva entre crecimiento de sectores con ventaja comparativa y empleo directo
 
-## Integrantes: 
+## Integrantes
 
 - Sebastián Martín Ramos Bohórquez (910867) 
 - Leonel Ivan Estrada (912785)
 
-## Objetivo:  
+## Objetivo  
   
-Buscar las elasticidades entre sectores con ventaja comparativa y su empleo directo. La hipótesis es comprobar que la relación es positiva y más fuerte que los sectores sin ventaja comparativa, caso contrario las elasticidades crecimiento del vab-crecimiento del empleo serán diferentes. Para esto, se utilizarán las bases del VAB provincial y empleo provincial, ambos con sectores desagregados, desde el año 2004 al 2024.
+Buscar las elasticidades entre sectores con ventaja comparativa y su empleo directo. La hipótesis es comprobar que la relación es positiva y más fuerte que los sectores sin ventaja comparativa; caso contrario las elasticidades crecimiento del vab-crecimiento del empleo serán diferentes. Para esto, se utilizarán las bases del VAB provincial y empleo provincial, ambos con sectores desagregados, desde el año 2004 al 2024.
 
-## Datos: 
+## Datos 
 - **Fuente para datos del VAB provinciales:**
   [PBG Provincial — CEPAL]((https://www.cepal.org/es/publicaciones/47900-desagregacion-provincial-valor-agregado-bruto-la-argentina-base-2004)
 - **Fuente para datos del empleo provincial:**
@@ -17,7 +17,7 @@ Buscar las elasticidades entre sectores con ventaja comparativa y su empleo dire
 - **Período:** 2004–2024
 - **Unidad de análisis:** vab sectorial provincial anual y empleo sectorial provincial anual
 
-## Análisis realizado: 
+## Análisis realizado 
 
 1. Limpieza y reestructuración de las bases raw hacia un formato que unifique años y variables (formatos heterogéneos entre bases por diferentes desagregaciones y nombres).
 2. Construcción de la variable RCA y posterior filtro de servicios para que queden los sectores de producción de bienes transables.
