@@ -1,7 +1,7 @@
 # Relación positiva entre crecimiento de sectores con ventaja comparativa y empleo directo
 
 ## Integrantes
-
+ 
 - Sebastián Martín Ramos Bohórquez (910867) 
 - Leonel Ivan Estrada (912785)
 
