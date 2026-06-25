@@ -12,9 +12,7 @@ base <- base %>%
 #Cuantos valores tengo valor = 0?
 
 sum(base$vab == 0, na.rm = TRUE) #1854 valores con vab igual a 0
-mean(base$vab == 0, na.rm = TRUE)#lo que representa un 9% aprox de la columna vab
 sum(base$empleo == 0, na.rm = TRUE) #3811 valores con empleo igual a 0
-mean(base$empleo == 0, na.rm = TRUE)#lo que representa un 18% de la columna empleo
 
 #Como me queda la base cuando saco estos valores?
 
@@ -58,7 +56,6 @@ nrow(base_limpia)
 #artificial, y por ende en la regresion dar siempre un resultado positivo
 #apesar de la gran depuracion, queda una base grande, lo que genera una
 #estadistica mas certera
-
 
 unique(base_limpia$sector) #para ver cuantos sectores nos quedaron
 saveRDS(base_limpia, "02_input/base_filtrada.rds")

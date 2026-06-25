@@ -1,22 +1,15 @@
 library(tidyverse)
-library(broom)
+library(broom)      # resultados de regresion ordenados
 library(lmtest)     # bptest(), coeftest()
 library(sandwich)   # vcovHC() — errores robustos
-library(car)        # vif()
-library(gt)
+library(car)        # vif() — prueba de hipotesis conjunta 
+library(gt)         # para mejorar visualizacion de tablas
 
-options(scipen = 999)
-theme_set(theme_minimal(base_size = 12))
+options(scipen = 999) #evito notacion cientifica
+theme_set(theme_minimal(base_size = 12)) #grafico por defecto para analizar regresiones
 
 base <- readRDS('02_input/base_filtrada.rds')
-
-
-#renombro por comodidad
-
-base <- base %>%
-  rename(empleo = empleo_registrado,
-         sector = sector_agregado)
-
+base_con_ss <- readRDS('02_input/tabla_rca.rds')
 
 #filtro la base con datos relevantes para regresion
 
@@ -27,52 +20,29 @@ base_regresion <- base %>%
 base_regresion %>% 
   ggplot(aes(vab,empleo)) +
   geom_point()
+#el resultado es una forma extraña en niveles.
+#si se aplica variaciones en el tiempo (log) nos da la relacion de las variaciones
 
-#2.vemos que si queremos pasar a log, hay muchos valores que son 0, lo cual
-#pierde sentido matematico
-
-
-#2.Cuantos valores para vab y empleo
-sum(is.na(base_regresion$vab))
-sum(base_regresion$vab <= 0, na.rm = TRUE)
-
-sum(is.na(base_regresion$empleo))
-sum(base_regresion$empleo <= 0, na.rm = TRUE)
-#aproximadamente 4000
-
-mean(base_regresion$vab == 0, na.rm = TRUE)
-mean(base_regresion$empleo == 0, na.rm = TRUE)
-#vemos cuanto representan esos datos en cada variable
-
-
-#limpio la base
-base_regresion_limpia <- base_regresion %>%
-  filter(
-    !is.na(vab),
-    !is.na(empleo),
-    vab > 0,
-    empleo > 0
-  )
-
-#hago regresion
-base_regresion_limpia %>% 
-  ggplot(aes(vab,empleo)) +
-  geom_point()
-
-#3.filtramos los 0 (creemos que dada nuestra base de 20mil extraer datos=0 no
-# cambia en la conclusion)
-base_regresion_limpia %>% 
+#2.aplicamos log en ambas variables 
+base_regresion %>% 
   ggplot(aes(log(vab),log(empleo))) +
   geom_point()
+#graficamente da una relacion de variaciones de empleo y vab mas clara
 
+#3. Comparamos como dan los regresores
 
-# Versión naive: en niveles
-mod_simple_nivel <- lm(empleo ~ vab, data = base_regresion_limpia)
+#Versión naive: en niveles
+mod_simple_nivel <- lm(empleo ~ vab, data = base_regresion)
 summary(mod_simple_nivel)
 
 # Versión con log(pib_pc): elasticidad
-mod_simple_log <- lm(log(empleo) ~ log(vab), data = base_regresion_limpia)
+mod_simple_log <- lm(log(empleo) ~ log(vab), data = base_regresion)
 summary(mod_simple_log)
+
+bptest(mod_simple_log)          #evidencia de heterocedasticidad
+coeftest(mod_simple_log, vcov = vcovHC(mod_simple_log, type = "HC1"))
+#sin embargo los errores casi no se mueven y siguen dando
+#significativos
 
 #verifico resumen de ambos modelos (sobre todo BIC y AIC)
 bind_rows(
@@ -81,54 +51,69 @@ bind_rows(
 ) |>
   select(modelo, r.squared, adj.r.squared, sigma, AIC, BIC)
 
+#ambos coeficientes dan significativos, pero modelo con log explica aun mas
+#R^2 ajustado 0,6976 vs 0,7508. Ademas AIC y BIC dan mas chicos. Y el 
+#error estandar del log da 1.
+#por ende elijo modelo con log.
 
-#AÑADO DUMMIE RCA (que es binaria; 0 o 1)
+#4.añado dummie RCA (que es binaria; 0 o 1)
 
 #creo dummy para rca>1 y agrego a base
-base_regresion_limpia <- base_regresion_limpia %>%
+base_regresion <- base_regresion %>%
   mutate(dummy_rca = if_else(rca > 1, 1, 0))
 
 
-modelo_con_dummie <- lm(log(empleo) ~ log(vab) + dummy_rca,
-               data = base_regresion_limpia)
-summary(modelo_con_dummie)
+modelo_con_dummy <- lm(log(empleo) ~ log(vab) + dummy_rca,
+               data = base_regresion)
+summary(modelo_con_dummy)
+
+bptest(modelo_con_dummy)          #evidencia de heterocedasticidad
+coeftest(modelo_con_dummy, vcov = vcovHC(modelo_con_dummy, type = "HC1"))
+#sin embargo los errores casi no se mueven y siguen dando
+#significativos
 
 #resumen del modelo
 bind_rows(
-  glance(modelo_con_dummie)   |> mutate(modelo = "con dummie")
+  glance(modelo_con_dummy)   |> mutate(modelo = "con dummy")
 ) |>
   select(modelo, r.squared, adj.r.squared, sigma, AIC, BIC)
-#ajusta mejor por R2 y BIC y AIC
+#ajusta levemente mejor por R^2 y BIC y AIC, ademas que da significativo la dummy
 
 #veo cuanto me da de multicolinealidad
-vif(modelo_con_dummie)
-#me da baja
+vif(modelo_con_dummy)
+#me da baja (1<vif<5 multicolinealidad baja)
 
-#AGREGO VAB*RCA
+#5. agrego interaccion entre dummy
 
 modelo_completo <- lm(
   log(empleo) ~ log(vab) + dummy_rca + log(vab) * dummy_rca , 
- data = base_regresion_limpia
-  )
+ data = base_regresion)
 summary(modelo_completo)
 #el resumen demuestra que El efecto del VAB sobre el empleo es 
 #aproximadamente 0,14 puntos mayor en los sectores con ventaja 
 #comparativa que en los sectores sin ventaja comparativa.
 
+bptest(modelo_completo)          #evidencia de heterocedasticidad
+coeftest(modelo_completo, vcov = vcovHC(modelo_completo, type = "HC1"))
 
 bind_rows(
-  glance(modelo_con_dummie)   |> mutate(modelo = "con dummie"),
+  glance(modelo_con_dummy)   |> mutate(modelo = "con dummy"),
   glance(modelo_completo)   |> mutate(modelo = "completo")
 ) |>
   select(modelo, r.squared, adj.r.squared, sigma, AIC, BIC)
 
+#claramente el modelo completo es el que mejor ajusta
+
+
 #veo cuanto me da de multicolinealidad
 vif(modelo_completo)
-#claramente el modelo completo es el que mejor ajusta
+#la colinealidad se infla fuertemnete, lo que es logico al agregar la inteaccion
+#no es preocupante porque el coefiente da muy significativo y ademas no se vuela
+#el error estandar
 
 #Grafico exploratorio
 ggplot(
-  base_regresion_limpia,
+  base_regresion,
   aes(
     x = log(vab),
     y = log(empleo),
@@ -145,8 +130,13 @@ ggplot(
                  labels = c("RCA ≤ 1", "RCA > 1")
                )
 
+#segun lo visto en el grafico y la tabla de regresion, se puede observar que 
+#existe una clara relacion positiva entre vab y empleo. 
+#Y la mas importante, sectores con RCA>1 se parte de un nivel mas bajo 
+#(caso tabacalera de corrientes por ejemplo), cuando crece el VAB, crece mas 
+#fuerte en empleo que los que son RCA<=1
 
-#Visualización de coeficientescon gt
+#Visualización de coeficientes con gt
 tidy(modelo_completo) %>%
   gt()%>%
   fmt_number(
@@ -192,6 +182,73 @@ glance(modelo_completo)%>% #seleccionamos los datos a visualizar
     rows = Estadística != "Observaciones",
     decimals = 3
   )
+
+#############################################################################
+#A modo de benchmark se utilizará la base con servicios.
+#Será con el fin de ver qué tanto cambia con TODOS los sectores de la economía
+#############################################################################
+
+base_con_ss <- base_con_ss %>% 
+  rename(empleo = empleo_registrado)
+
+#filtro variables importantes
+base_con_ss<- base_con_ss %>% 
+  select(vab,empleo,rca)
+
+#como opero con log, filtro datos=0
+base_con_ss <- base_con_ss %>%
+  filter(
+    !is.na(vab),
+    !is.na(empleo),
+    vab > 0,
+    empleo > 0
+  )  
+
+#creo dummy
+base_con_ss <- base_con_ss %>%
+  mutate(dummy_rca = if_else(rca > 1, 1, 0))
+
+modelo_completo_con_ss <- lm(
+  log(empleo) ~ log(vab) + dummy_rca + log(vab) * dummy_rca , 
+  data = base_con_ss)
+summary(modelo_completo_con_ss)
+
+#comparo vs modelo sin servicios
+bind_rows(
+  glance(modelo_completo_con_ss)   |> mutate(modelo = "con servicios"),
+  glance(modelo_completo)   |> mutate(modelo = "sin servicios")
+) |>
+  select(modelo, r.squared, adj.r.squared, sigma, AIC, BIC)
+
+#veo cuanto me da de multicolinealidad
+vif(modelo_completo_con_ss)
+
+#busco evidencia de heterocedasticidad
+bptest(modelo_completo_con_ss)       
+#la hay, uso errores robustos para ver cuanto se modifica el error
+coeftest(modelo_completo_con_ss, vcov = vcovHC(modelo_completo_con_ss, type = "HC1"))
+#no cambia significatividad, y apenas cambian errores
+
+ggplot(
+  base_con_ss,
+  aes(
+    x = log(vab),
+    y = log(empleo),
+    color = factor(dummy_rca)
+  ))+
+  geom_point(alpha = 0.15, size= 1) +
+  geom_smooth(method = "lm", se = FALSE, linewidth = 1.2) +
+  labs(
+    x = "log(VAB)",
+    y = "log(Empleo)",
+    color = "RCA"
+  ) + scale_color_manual(
+    values = c("grey70", "#1f77b4"),
+    labels = c("RCA ≤ 1", "RCA > 1")
+  )
+
+
+
 
 
 
