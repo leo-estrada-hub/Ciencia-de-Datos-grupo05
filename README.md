@@ -71,7 +71,7 @@ install.packages(c("tidyverse", "readxl", "scales", "janitor", "broom", "lmtest"
 ## Conclusiones principales
 En el análisis presentado se enfatiza en el uso de la regresión, donde se vio que existe una relación positiva entre el crecimiento del VAB y del empleo más fuerte en los sectores con ventaja comparativa provinciales, que en los que no tienen ventaja comparativa, lo que es consistente con la hipótesis inicial. Sin embargo al ser considerado un efecto agregado, se profundizó en el análisis individual de estos sectores con ventaja comparativa. De este análisis se concluye que cada sector provincial sufrió de una evolución diferente, tanto en VAB como en empleo, lo que agrega variabilidad y quita explicatividad a la regresión. De esta manera, para conocer los detalles en profundidad de cómo afecta la ventaja comparativa al producto y empleo en cada sector, se requiere hacer un análisis individualizado de estos.
 
- 
+ ```
 
 
 
