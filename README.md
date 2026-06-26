@@ -40,7 +40,7 @@ TP-ciencia-de-datos/
 ├── 04_output/
 │   ├── tablas/                                  # Tablas de resultados exportadas
 │   └── graficos/                                # Visualizaciones generadas
-├── 05_docs/
+├── 05_docs/                                     # Presentación
 └── README.md
 ```
    
