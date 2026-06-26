@@ -60,16 +60,17 @@ install.packages(c("tidyverse", "readxl", "scales", "janitor", "broom", "lmtest"
    3. `03_script/01_limpieza_y_procesamiento_de_datos.R/03_procesamiento_tabla_final` — Lee las bases procesadas de empleo y VAB, unifica servicios y crea tabla unificada
 #### 2. Métodos
    1. `03_script/02_metodos/01_metodo_rca.R` — Crea tabla con cálculo de RCA
-   2. `03_script/02_metodos/02_filtro_no_transables.R` — Saca de la tabla todos los servicios
+   2. `03_script/01_limpieza_y_procesamiento_de_datos.R/04_filtro_no_transables.R` — Saca de la tabla todos los servicios (necesita la tabla del método rca)
    3. `03_script/02_metodos/03_metodo_regresion.R` — Análisis de regresión
 #### 3. Exploratorio
-   1. `03_script/03_exploratorio/analisis_descriptivo.R` — Crea tabla con cálculo de RCA
+   1. `03_script/03_exploratorio/analisis_descriptivo.R` — Crea tabla de análisis poblacional, de inferencia, y de máximo RCA
+   2. `03_script/03_exploratorio/analisis_descriptivo_con_servicios.R` — Crea tabla de análisis poblacional, de inferencia, con servicios (benchmarck) 
 #### 4.Gráficos
    1. `03_script/04_graficos/grafico_mapa.R` — Crea gráfico mapa
    2. `03_script/04_graficos/grafico_scatter_plot.R` — Crea gráfico scatter (indiferente el orden cuando se corre)
 
 ## Conclusiones principales
-En el análisis presentado se enfatiza en el uso de la regresión, donde se vio que existe una relación positiva entre el crecimiento del VAB y del empleo más fuerte en los sectores con ventaja comparativa provinciales, que en los que no tienen ventaja comparativa, lo que es consistente con la hipótesis inicial. Sin embargo al ser considerado un efecto agregado, se profundizó en el análisis individual de estos sectores con ventaja comparativa. De este análisis se concluye que cada sector provincial sufrió de una evolución diferente, tanto en VAB como en empleo, lo que agrega variabilidad y quita explicatividad a la regresión. De esta manera, para conocer los detalles en profundidad de cómo afecta la ventaja comparativa al producto y empleo en cada sector, se requiere hacer un análisis individualizado de estos.
+En el análisis presentado se enfatiza en el uso de la regresión, donde se vio que existe una relación positiva entre el crecimiento del VAB y del empleo más fuerte en los sectores con ventaja comparativa provinciales, que en los que no tienen ventaja comparativa, lo que es consistente con la hipótesis inicial. Sin embargo al ser considerado un efecto agregado, se profundizó en el análisis individual de estos sectores con ventaja comparativa. De este análisis se concluye que cada sector provincial sufrió de una evolución diferente, tanto en VAB como en empleo, lo que agrega variabilidad y quita explicatividad de los errores a la regresión. De esta manera, para conocer los detalles en profundidad de cómo afecta la ventaja comparativa al producto y al empleo en cada sector, se requiere hacer un análisis individualizado de estos.
 
  ```
 
