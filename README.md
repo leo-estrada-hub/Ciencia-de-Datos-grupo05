@@ -1,4 +1,4 @@
-# Relación positiva entre crecimiento de sectores con ventaja comparativa y empleo directo
+# Relación Empleo-VAB: mediante ventajas comparativas
 
 ## Integrantes
  
