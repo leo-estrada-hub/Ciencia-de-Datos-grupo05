@@ -1,3 +1,4 @@
+
 #analisis descriptivo
 
 library(tidyverse)
@@ -7,11 +8,9 @@ options(scipen = 999)
 # descargo base filtrada
 
 tabla_rca <- readRDS("02_input/base_filtrada.rds")
-tabla_rca_ss <- readRDS("02_input/tabla_rca.rds")
 nrow(tabla_rca)
-nrow(tabla_rca_ss)
 
-# creamos rca promedio
+#0 creamos rca promedio
 
 rca_promedio <- tabla_rca %>% 
   group_by(provincia, sector) %>%
@@ -19,6 +18,7 @@ rca_promedio <- tabla_rca %>%
     rca_promedio = mean(rca, na.rm = TRUE),
     .groups = "drop"
   )
+
 ###########################################################################
 #1) Cuantos RCA>1 hay?
 
@@ -59,7 +59,6 @@ tabla_1_df <- tabla_rca %>%
 
 #2 uso años 2004 y 2024 de cada sector, y creo columnas con empleo y vab de ambos años
 #resulta en tabla con variaciones de empleo y vab 
-#referencia de los 145 sectores que usamos como con rca>1
 
 sectores_vc_dif <- tabla_1_df %>%
   arrange(provincia, sector, anio) %>%
@@ -73,23 +72,13 @@ sectores_vc_dif <- tabla_1_df %>%
   ) %>%
   mutate(
     crec_vab = ifelse(
-      vab_2004 == 0,
-      0,
-      paste0(round(100 * (vab_2024 / vab_2004 - 1), 2),"%")
-    ),
+      vab_2004 == 0,0,
+      paste0(round(100 * (vab_2024 / vab_2004 - 1), 2),"%")),
     crec_empleo = ifelse(
-      empleo_2004 == 0,
-      0,
-      paste0(round(100 * (empleo_2024 / empleo_2004 - 1), 2),"%")
-    )
-  )
-
-#resumen mas visible (solo para visualizar casos especiales)
-res_sectores_vc_dif <- sectores_vc_dif %>% 
-  select(provincia, sector, crec_vab, crec_empleo)
+      empleo_2004 == 0,0,paste0(round(100 * (empleo_2024 / empleo_2004 - 1), 2),"%")))
 
 
-#3 recreo otra tabla apartir de la unificada para colapsar los sectores en 1
+#3 recreo otra tabla a partir de la unificada para colapsar los sectores en 1
 tabla_provincias <- tabla_1_df %>%
   group_by(provincia, anio) %>%
   summarise(
@@ -103,26 +92,9 @@ tabla_provincias <- tabla_1_df %>%
     vab_2024 = first(vab[anio == 2024], default = 0),
     empleo_2004 = first(empleo[anio == 2004], default = 0),
     empleo_2024 = first(empleo[anio == 2024], default = 0),
-    crec_vab = paste0(
-      round(
-        ifelse(vab_2004 == 0,
-               0,
-               100 * (vab_2024 / vab_2004 - 1)),
-        2
-      ),
-      "%"
-    ),
-    crec_empleo = paste0(
-      round(
-        ifelse(empleo_2004 == 0,
-               0,
-               100 * (empleo_2024 / empleo_2004 - 1)),
-        2
-      ),
-      "%"
-    ),
-    .groups = "drop"
-  )
+    crec_vab = paste0(round(ifelse(vab_2004 == 0,0, 100 * (vab_2024 / vab_2004 - 1)),2),"%"),
+    crec_empleo = paste0(round(ifelse(empleo_2004 == 0,0, 100 * (empleo_2024 / empleo_2004 - 1)),2),"%"),
+    .groups = "drop")
 
 #=============================================================================>
 
@@ -133,64 +105,6 @@ tabla_sec_crec <- sectores_por_provincia %>%
   select(provincia, cantidad_sectores,pct_vc, crec_vab, crec_empleo)
 
 #=============================================================================>
-
-#5 analisis de distribuciones del vab
-
-#2004
-tabla_provincias %>% 
-  summarise(
-    media = round(mean(vab_2004, na.rm = TRUE), 2),
-    mediana = round(median(vab_2004, na.rm = TRUE), 2),
-    desvio_estandar = round(sd(vab_2004, na.rm = TRUE), 2))
-
-#2024
-tabla_provincias %>% 
-  summarise(
-    media = round(mean(vab_2024, na.rm = TRUE), 2),
-    mediana = round(median(vab_2024, na.rm = TRUE), 2),
-    desvio_estandar = round(sd(vab_2024, na.rm = TRUE), 2))
-
-#6 pruebo si existen diferencias significativas entre media de vab 2004 y media 2024
-t.test(
-  tabla_provincias$vab_2004,
-  tabla_provincias$vab_2024,
-  paired = TRUE
-)
-#dado que p-value es 0,057, y se usa significacia al 0,05, se comprueba que
-#bajo estos datos no hay diferencias significativas
-
-# Test t pareado de vab
-tt <- t.test(
-  tabla_provincias$vab_2004,
-  tabla_provincias$vab_2024,
-  paired = TRUE
-)
-
-#7 analisis distribucion del empleo
-
-tabla_provincias %>% 
-  summarise(
-    media = round(mean(empleo_2004, na.rm = TRUE), 2),
-    mediana = round(median(empleo_2004, na.rm = TRUE), 2),
-    desvio_estandar = round(sd(empleo_2004, na.rm = TRUE), 2))
-
-tabla_provincias %>% 
-  summarise(
-    media = round(mean(empleo_2024, na.rm = TRUE), 2),
-    mediana = round(median(empleo_2024, na.rm = TRUE), 2),
-    desvio_estandar = round(sd(empleo_2024, na.rm = TRUE), 2))
-
-#8 se testea que haya habido un cambio en el empleo medio entre 2004-2024
-t.test(
-  tabla_provincias$empleo_2004,
-  tabla_provincias$empleo_2024,
-  paired = TRUE
-)
-#depende el nivel de significancia que se maneje implica que existe o no
-#cambio en el empleo medio. El p-value es 0,053. Si usamos una significancia al
-#0,05, este valor no es significativo, por ende no se puede comprobar que hay 
-#cambios en la media
-
 
 ###########################################################################
 #3) Qué tanto cambiaron las concentraciones de los sectores en cada provincia del 2024 al 2004?
@@ -208,15 +122,12 @@ vab_total <- tabla_rca %>%
 c_hhi_2024 <- tabla_rca %>% 
   filter(anio == 2024) %>% 
   left_join(vab_total, by = "provincia") %>% 
-  mutate(
-    participacion = vab / vab_total
+  mutate(participacion = vab / vab_total
   ) %>% 
   group_by(provincia) %>% 
   summarise(
     hhi_2024 = sum(participacion^2, na.rm = TRUE)*10000,
-    .groups = "drop"
-  )
-
+    .groups = "drop")
 
 #3 vab total 2004
 
@@ -237,8 +148,7 @@ c_hhi_2004 <- tabla_rca %>%
   group_by(provincia) %>% 
   summarise(
     hhi_2004 = sum(share_vab_2004^2, na.rm = TRUE)*10000,
-    .groups = "drop"
-  )
+    .groups = "drop")
 
 #=========================================================================>
 
@@ -251,33 +161,10 @@ tabla_hhi <- c_hhi_2004 %>%
 
 #=========================================================================>  
 
-#6 distribuciones del hhi
-c_hhi_2004 %>% 
-  summarise(
-    media = round(mean(hhi_2004, na.rm = TRUE), 2),
-    mediana = round(median(hhi_2004, na.rm = TRUE), 2),
-    desvio_estandar = round(sd(hhi_2004, na.rm = TRUE), 2))
-
-c_hhi_2024 %>% 
-  summarise(
-    media = round(mean(hhi_2024, na.rm = TRUE), 2),
-    mediana = round(median(hhi_2024, na.rm = TRUE), 2),
-    desvio_estandar = round(sd(hhi_2024, na.rm = TRUE), 2))
-
-#7 se busca si hubo cambios significativos en la concentracion
-t.test(
-  c_hhi_2004$hhi_2004,
-  c_hhi_2024$hhi_2024,
-  paired = TRUE
-)
-#no se rechaza H0, implica que no hay evidencia de que haya un cambio de 
-#concentracion media
-
-
 #########################################################################
 ##                  Creacion de tabla descriptiva                     ##
 
-#8 unifico tablas para ver cambios en hhi, y en empleo y vab
+#1 unifico tablas para ver cambios en hhi, y en empleo y vab
 
 dif_vs_hhi <- tabla_hhi %>% 
   left_join(tabla_sec_crec, by = "provincia") %>% 
@@ -291,14 +178,14 @@ dif_vs_hhi <- tabla_hhi %>%
   ) %>%
   rename(
     `Provincia` = provincia,
-    `Cantidad de sectores RCA > 1` = cantidad_sectores,
-    `Porcentaje de sectores RCA > 1` = pct_vc,
-    `Crecimiento VAB` = crec_vab,
-    `Crecimiento empleo` = crec_empleo,
-    `Variación HHI` = dif_hhi
+    `Cant sectores RCA > 1` = cantidad_sectores,
+    `% sectores RCA > 1` = pct_vc,
+    `Crec VAB` = crec_vab,
+    `Crec empleo` = crec_empleo,
+    `Var HHI` = dif_hhi
   )
 
-#9 creo tabla
+#2 creo tabla
 dif_vs_hhi %>%
   gt() %>%
   tab_header(
@@ -312,11 +199,10 @@ dif_vs_hhi %>%
     expand = 20
   )
 
-
 ###########################################################################
-# Creacion de tabla de inferencia
+##                    Creacion de tabla de inferencia                     ##
 
-# Tests t pareados
+# 1 tests t pareados
 tt_vab <- t.test(
   tabla_provincias$vab_2004,
   tabla_provincias$vab_2024,
@@ -335,7 +221,7 @@ tt_hhi <- t.test(
   paired = TRUE
 )
 
-# Tabla resumen
+#2 creamos tabla resumen
 tabla_resumen <- tibble(
   Variable = c(
     "VAB", "VAB", "VAB",
@@ -375,7 +261,6 @@ tabla_resumen <- tibble(
     round(tt_hhi$p.value, 4), "", ""
   )
 )
-
 
 #3 archivo tabla
 
@@ -428,14 +313,12 @@ dif_empleo_vc_max <- tabla_max_empleo_vc %>%
     names_prefix = "empleo_",
     values_fill = 0
   ) %>% 
-  mutate(
-    dif_empleo = paste0(
-      round((empleo_2024 - empleo_2004) / empleo_2004 * 100, 2),"%"))
+  mutate(dif_empleo = paste0(round((empleo_2024 - empleo_2004) / empleo_2004 * 100, 2),"%"))
 
 #=========================================================================>
 
-
-#3 (Junto analisis del maximo rca>1 en cada provincia)
+###########################################################################
+##                    Creacion de tabla de max RCA>1                    ##
 
 var_max_rca <- rca_max %>% 
   left_join(dif_empleo_vc_max, by = c("provincia", "sector")) %>%
@@ -457,10 +340,10 @@ var_max_rca <- rca_max %>%
   rename(
     `Provincia` = provincia,
     `Sector` = sector,
-    `Máximo RCA promedio por provincia` = rca_promedio,
+    `Max RCA provincia` = rca_promedio,
     `Empleo 2004` = empleo_2004,
     `Empleo 2024` = empleo_2024,
-    `Diferencia de empleo` = dif_empleo
+    `Dif de empleo` = dif_empleo
   )
 #4 creo tabla
 var_max_rca %>%
@@ -474,374 +357,9 @@ var_max_rca %>%
     vheight = 1000,
     zoom = 2,
     expand = 20
-  )
-
-###########################################################################
-#6) Y Qué ocurre con el HHI, vab y empleo si agrego los servicios?
-
-
-#0 modifico nombres
-tabla_rca_ss <- tabla_rca_ss %>% 
-  rename(sector = sector_agregado,
-         empleo = empleo_registrado)
-
-#0 creamos rca promedio
-rca_promedio_ss <- tabla_rca_ss %>% 
-  group_by(provincia, sector) %>%
-  summarise(
-    rca_promedio = mean(rca, na.rm = TRUE),
-    .groups = "drop"
-  )
-
-#Repito analisis previo con tabla con servicios
-
-#1 creo tabla con sectores con rca promedio>1
-sectores_vc_ss <- rca_promedio_ss %>%
-  filter(rca_promedio > 1)
-
-#2 creo funcion total sectores
-total_sectores_ss <- n_distinct(tabla_rca_ss$sector)
-
-#3 creo tabla con sectores con rca>1 en cada provincia y su porcentaja
-#=========================================================================>
-sectores_por_provincia_ss <- sectores_vc_ss %>%
-  group_by(provincia) %>%
-  summarise(cantidad_sectores = n_distinct(sector)) %>% 
-  mutate(pct_vc = paste0(round(cantidad_sectores / total_sectores_ss * 100, 2), "%"))
-#=========================================================================>
-sectores_por_provincia_ss %>% 
-  summarise(
-    media = mean(cantidad_sectores, na.rm = TRUE),
-    desvio_estandar = sd(cantidad_sectores, na.rm = TRUE),
-    mediana = median(cantidad_sectores, na.rm = TRUE)
-  )
-
-#2) Cómo evolucionó el empleo y vab en el sector con RCA>1? 
-
-#1 tabla que de los sectores con rca>1 me de todos los datos
-
-tabla_1_df_ss <- tabla_rca_ss %>%
-  semi_join(sectores_vc_ss, by = c("provincia", "sector"))
-
-#2 uso años 2004 y 2024 de cada sector, y creo columnas con empleo y vab de ambos años
-#resulta en tabla con variaciones de empleo y vab 
-#referencia de los 145 sectores que usamos como con rca>1
-
-sectores_vc_dif_ss <- tabla_1_df_ss %>%
-  arrange(provincia, sector, anio) %>%
-  group_by(provincia, sector) %>%
-  summarise(
-    vab_2004 = first(vab[anio == 2004], default = 0),
-    vab_2024 = first(vab[anio == 2024], default = 0),
-    empleo_2004 = first(empleo[anio == 2004], default = 0),
-    empleo_2024 = first(empleo[anio == 2024], default = 0),
-    .groups = "drop"
-  ) %>%
-  mutate(
-    crec_vab = ifelse(
-      vab_2004 == 0,
-      0,
-      paste0(round(100 * (vab_2024 / vab_2004 - 1), 2),"%")
-    ),
-    crec_empleo = ifelse(
-      empleo_2004 == 0,
-      0,
-      paste0(round(100 * (empleo_2024 / empleo_2004 - 1), 2),"%")
     )
-  )
-
-#resumen mas visible
-res_sectores_vc_dif_ss <- sectores_vc_dif_ss %>% 
-  select(provincia, sector, crec_vab, crec_empleo)
 
 
-#3 recreo otra tabla apartir de la unificada para colapsar los sectores en 1
-tabla_provincias_ss <- tabla_1_df_ss %>%
-  group_by(provincia, anio) %>%
-  summarise(
-    vab = sum(vab, na.rm = TRUE),
-    empleo = sum(empleo, na.rm = TRUE),
-    .groups = "drop"
-  ) %>%
-  group_by(provincia) %>%
-  summarise(
-    vab_2004 = first(vab[anio == 2004], default = 0),
-    vab_2024 = first(vab[anio == 2024], default = 0),
-    empleo_2004 = first(empleo[anio == 2004], default = 0),
-    empleo_2024 = first(empleo[anio == 2024], default = 0),
-    crec_vab = paste0(
-      round(
-        ifelse(vab_2004 == 0,
-               0,
-               100 * (vab_2024 / vab_2004 - 1)),
-        2
-      ),
-      "%"
-    ),
-    crec_empleo = paste0(
-      round(
-        ifelse(empleo_2004 == 0,
-               0,
-               100 * (empleo_2024 / empleo_2004 - 1)),
-        2
-      ),
-      "%"
-    ),
-    .groups = "drop"
-  )
-#=============================================================================>
-#=============================================================================>
-
-#4 tabla que une los sectores por provincias y las diferencias de empleo y vab
-
-tabla_sec_crec_ss <- sectores_por_provincia_ss %>% 
-  left_join(tabla_provincias_ss) %>% 
-  select(provincia, cantidad_sectores,pct_vc, crec_vab, crec_empleo)
-
-#=============================================================================>
-#=============================================================================>
-#5 analisis de distribuciones del vab
-
-#2004
-tabla_provincias_ss %>% 
-  summarise(
-    media = round(mean(vab_2004, na.rm = TRUE), 2),
-    mediana = round(median(vab_2004, na.rm = TRUE), 2),
-    desvio_estandar = round(sd(vab_2004, na.rm = TRUE), 2))
-
-#2024
-tabla_provincias_ss %>% 
-  summarise(
-    media = round(mean(vab_2024, na.rm = TRUE), 2),
-    mediana = round(median(vab_2024, na.rm = TRUE), 2),
-    desvio_estandar = round(sd(vab_2024, na.rm = TRUE), 2))
-
-#6 pruebo si existen diferencias significativas entre media de vab 2004 y media 2024
-t.test(
-  tabla_provincias_ss$vab_2004,
-  tabla_provincias_ss$vab_2024,
-  paired = TRUE
-)
-#p-value<0,05 lo que implica un crecimiento en el empleo
-
-#7 analisis distribcuion del empleo
-
-tabla_provincias_ss %>% 
-  summarise(
-    media = round(mean(empleo_2004, na.rm = TRUE), 2),
-    mediana = round(median(empleo_2004, na.rm = TRUE), 2),
-    desvio_estandar = round(sd(empleo_2004, na.rm = TRUE), 2))
-
-tabla_provincias_ss %>% 
-  summarise(
-    media = round(mean(empleo_2024, na.rm = TRUE), 2),
-    mediana = round(median(empleo_2024, na.rm = TRUE), 2),
-    desvio_estandar = round(sd(empleo_2024, na.rm = TRUE), 2))
-
-#8 se testea para ver si hubo un cambio en el empleo medio entre 2004-2024
-t.test(
-  tabla_provincias_ss$empleo_2004,
-  tabla_provincias_ss$empleo_2024,
-  paired = TRUE
-)
-
-#devuelta da significativo, lo que implica tambien un crecimiento en el vab
-
-
-#3) Qué tanto cambiaron las concentraciones de los sectores en cada provincia del 2024 al 2004?
-
-
-#1 vab total 2024
-
-vab_total_ss <- tabla_rca_ss %>% 
-  filter(anio == 2024) %>% 
-  group_by(provincia) %>% 
-  summarise(vab_total = sum(vab, na.rm = TRUE),
-            .groups = "drop")
-
-#2 creo hhi 2024
-
-c_hhi_2024_ss <- tabla_rca_ss %>% 
-  filter(anio == 2024) %>% 
-  left_join(vab_total_ss, by = "provincia") %>% 
-  mutate(
-    participacion = vab / vab_total
-  ) %>% 
-  group_by(provincia) %>% 
-  summarise(
-    hhi_2024 = sum(participacion^2, na.rm = TRUE)*10000,
-    .groups = "drop"
-  )
-
-
-#3 vab total 2004
-
-vab_total_ss <- tabla_rca_ss %>% 
-  filter(anio == 2004) %>% 
-  group_by(provincia) %>% 
-  summarise(vab_total = sum(vab, na.rm = TRUE),
-            .groups = "drop")
-
-#4 creo hhi 2004
-
-c_hhi_2004_ss <- tabla_rca_ss %>% 
-  filter(anio == 2004) %>% 
-  left_join(vab_total_ss, by = "provincia") %>% 
-  mutate(
-    share_vab_2004 = vab / vab_total
-  ) %>% 
-  group_by(provincia) %>% 
-  summarise(
-    hhi_2004 = sum(share_vab_2004^2, na.rm = TRUE)*10000,
-    .groups = "drop"
-  )
-
-#=========================================================================>
-
-#5 diferencia de concentraciones 2024-2004
-
-tabla_hhi_ss <- c_hhi_2004_ss %>%
-  left_join(c_hhi_2024_ss, by = "provincia") %>% 
-  mutate(
-    dif_hhi = paste0(round((hhi_2024 - hhi_2004) / hhi_2004 * 100, 2),"%"))
-
-#=========================================================================>  
-
-#6 distribuciones del hhi
-c_hhi_2004_ss %>% 
-  summarise(
-    media = round(mean(hhi_2004, na.rm = TRUE), 2),
-    mediana = round(median(hhi_2004, na.rm = TRUE), 2),
-    desvio_estandar = round(sd(hhi_2004, na.rm = TRUE), 2))
-
-c_hhi_2024_ss %>% 
-  summarise(
-    media = round(mean(hhi_2024, na.rm = TRUE), 2),
-    mediana = round(median(hhi_2024, na.rm = TRUE), 2),
-    desvio_estandar = round(sd(hhi_2024, na.rm = TRUE), 2))
-
-#7 se busca si hubo cambios significativos en la concentracion
-t.test(
-  c_hhi_2004_ss$hhi_2004,
-  c_hhi_2024_ss$hhi_2024,
-  paired = TRUE
-)
-#no se rechaza H0, implica que no hay evidencia de que haya un cambio de 
-#concentracion media
-
-#8 unifico tablas para ver cambios en hhi, y en empleo y vab
-
-dif_vs_hhi_ss <- tabla_hhi_ss %>% 
-  left_join(tabla_sec_crec_ss, by = "provincia") %>% 
-  select(
-    provincia,
-    cantidad_sectores,
-    pct_vc,
-    crec_vab,
-    crec_empleo,
-    dif_hhi
-  ) %>%
-  rename(
-    `Provincia` = provincia,
-    `Cantidad de sectores RCA > 1` = cantidad_sectores,
-    `Porcentaje de sectores RCA > 1` = pct_vc,
-    `Crecimiento VAB` = crec_vab,
-    `Crecimiento empleo` = crec_empleo,
-    `Variación HHI` = dif_hhi
-  )
-#9 archivo tabla
-
-dif_vs_hhi_ss %>%
-  gt() %>%
-  tab_header(
-    title = "¿Qué tanto cambia agregar servicios? "
-  ) %>%
-  gtsave(
-    filename = "04_output/tablas/tabla_con_servicios_descriptiva_poblacion.png",
-    vwidth = 2200,
-    vheight = 1000,
-    zoom = 2,
-    expand = 20
-  )
-
-#creo tabla de inferencia
-
-# Creación de tabla de inferencia (con servicios)
-
-#1 Tests t pareados
-tt_vab_ss <- t.test(
-  tabla_provincias_ss$vab_2004,
-  tabla_provincias_ss$vab_2024,
-  paired = TRUE
-)
-
-tt_empleo_ss <- t.test(
-  tabla_provincias_ss$empleo_2004,
-  tabla_provincias_ss$empleo_2024,
-  paired = TRUE
-)
-
-tt_hhi_ss <- t.test(
-  c_hhi_2004_ss$hhi_2004,
-  c_hhi_2024_ss$hhi_2024,
-  paired = TRUE
-)
-
-#2 Tabla resumen
-tabla_resumen_ss <- tibble(
-  Variable = c(
-    "VAB", "VAB", "VAB",
-    "Empleo", "Empleo", "Empleo",
-    "HHI", "HHI", "HHI"
-  ),
-  Estadístico = rep(c("Media", "Mediana", "Desvío estándar"), 3),
-  `2004` = c(
-    round(mean(tabla_provincias_ss$vab_2004, na.rm = TRUE), 2),
-    round(median(tabla_provincias_ss$vab_2004, na.rm = TRUE), 2),
-    round(sd(tabla_provincias_ss$vab_2004, na.rm = TRUE), 2),
-    
-    round(mean(tabla_provincias_ss$empleo_2004, na.rm = TRUE), 2),
-    round(median(tabla_provincias_ss$empleo_2004, na.rm = TRUE), 2),
-    round(sd(tabla_provincias_ss$empleo_2004, na.rm = TRUE), 2),
-    
-    round(mean(c_hhi_2004_ss$hhi_2004, na.rm = TRUE), 2),
-    round(median(c_hhi_2004_ss$hhi_2004, na.rm = TRUE), 2),
-    round(sd(c_hhi_2004_ss$hhi_2004, na.rm = TRUE), 2)
-  ),
-  `2024` = c(
-    round(mean(tabla_provincias_ss$vab_2024, na.rm = TRUE), 2),
-    round(median(tabla_provincias_ss$vab_2024, na.rm = TRUE), 2),
-    round(sd(tabla_provincias_ss$vab_2024, na.rm = TRUE), 2),
-    
-    round(mean(tabla_provincias_ss$empleo_2024, na.rm = TRUE), 2),
-    round(median(tabla_provincias_ss$empleo_2024, na.rm = TRUE), 2),
-    round(sd(tabla_provincias_ss$empleo_2024, na.rm = TRUE), 2),
-    
-    round(mean(c_hhi_2024_ss$hhi_2024, na.rm = TRUE), 2),
-    round(median(c_hhi_2024_ss$hhi_2024, na.rm = TRUE), 2),
-    round(sd(c_hhi_2024_ss$hhi_2024, na.rm = TRUE), 2)
-  ),
-  `p-valor` = c(
-    round(tt_vab_ss$p.value, 4), "", "",
-    round(tt_empleo_ss$p.value, 4), "", "",
-    round(tt_hhi_ss$p.value, 4), "", ""
-  )
-)
-
-#3 Archivar tabla
-tabla_resumen_ss %>%
-  gt() %>%
-  tab_header(
-    title = "¿Y qué dice el test pareado?",
-    subtitle = "¿Son significativas las variaciones del 2004 al 2024?"
-  ) %>%
-  gtsave(
-    filename = "04_output/tablas/tabla_con_servicios_descriptiva_inferencia.png",
-    vwidth = 2200,
-    vheight = 1000,
-    zoom = 2,
-    expand = 20
-  )
 
 
 
