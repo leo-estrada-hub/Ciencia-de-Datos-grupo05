@@ -130,7 +130,7 @@ g_mapa <- g_mapa +
     "label",
     x = -81,
     y = -24.4,
-    label = " Por ejemplo Catamarca\n que su crecimiento en \n empleo fue del 142%",
+    label = " Por ejemplo Catamarca\n tuvo un crecimiento en \n empleo del 68%",
     hjust = 0,
     size = 4,
     fontface = "bold"
