@@ -33,9 +33,9 @@ TP-ciencia-de-datos/
 ├── 01_raw/                                      # Bases originales descargadas de la OCDE y CEPAL
 ├── 02_input/                                    # Bases procesadas y listas para el análisis
 ├── 03_script/
-│   ├── 01_limpieza_y_procesamiento_de_datos.R   #Scripts que procesan las base
+│   ├── 01_limpieza_y_procesamiento_de_datos.R   #Scripts que procesan las bases
 │   ├── 02_metodos.R                             #Scripts con métodos rca y regresión
-│   ├── 03_exploratorio.R                        #Script con análisis descriptivo
+│   ├── 03_exploratorio.R                        #Scripts con análisis descriptivos
 │   └── 04_graficos.R                            #Scripts con las visualizaciones (mapa y scatter plot)
 ├── 04_output/
 │   ├── tablas/                                  # Tablas de resultados exportadas
