@@ -7,7 +7,7 @@
 
 ## Objetivo  
   
-Buscar las elasticidades entre sectores con ventaja comparativa y su empleo directo. La hipótesis es comprobar que la relación es positiva y más fuerte que los sectores sin ventaja comparativa; caso contrario las elasticidades crecimiento del vab-crecimiento del empleo serán diferentes. Para esto, se utilizarán las bases del VAB provincial y empleo provincial, ambos con sectores desagregados, desde el año 2004 al 2024.
+Buscar las elasticidades entre sectores con ventaja comparativa y su empleo directo. La hipótesis es comprobar que la relación es positiva y más fuerte que los sectores sin ventaja comparativa; caso contrario las elasticidades crecimiento del vab/crecimiento del empleo serán diferentes. Para esto, se utilizarán las bases del VAB provincial y empleo provincial, ambos con sectores desagregados, desde el año 2004 al 2024.
 
 ## Datos 
 - **Fuente para datos del VAB provinciales:**
