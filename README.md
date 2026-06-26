@@ -11,9 +11,9 @@ Buscar las elasticidades entre sectores con ventaja comparativa y su empleo dire
 
 ## Datos 
 - **Fuente para datos del VAB provinciales:**
-  [PBG Provincial — CEPAL]((https://www.cepal.org/es/publicaciones/47900-desagregacion-provincial-valor-agregado-bruto-la-argentina-base-2004)
+  [PBG Provincial — CEPAL] ((https://www.cepal.org/es/publicaciones/47900-desagregacion-provincial-valor-agregado-bruto-la-argentina-base-2004))
 - **Fuente para datos del empleo provincial:**
-  [Datos trimestrales de empleo - Provinciales — OEDE](https://www.argentina.gob.ar/trabajo/estadisticas/oede-estadisticas-provinciales)
+  [Datos trimestrales de empleo - Provinciales — OEDE] ((https://www.argentina.gob.ar/trabajo/estadisticas/oede-estadisticas-provinciales))
 - **Período:** 2004–2024
 - **Unidad de análisis:** vab sectorial provincial anual y empleo sectorial provincial anual
 
