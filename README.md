@@ -63,7 +63,7 @@ install.packages(c("tidyverse", "readxl", "scales", "janitor", "broom", "lmtest"
    2. `03_script/01_limpieza_y_procesamiento_de_datos.R/04_filtro_no_transables.R` — Saca de la tabla todos los servicios (necesita la tabla del método rca)
    3. `03_script/02_metodos/03_metodo_regresion.R` — Análisis de regresión
 #### 3. Exploratorio
-   1. `03_script/03_exploratorio/analisis_descriptivo.R` — Crea tabla de análisis poblacional, de inferencia, y de máximo RCA
+   1. `03_script/03_exploratorio/analisis_descriptivo.R` — Crea tabla de análisis poblacional, de inferencia y de máximo RCA
    2. `03_script/03_exploratorio/analisis_descriptivo_con_servicios.R` — Crea tabla de análisis poblacional, de inferencia, con servicios (benchmarck) 
 #### 4.Gráficos
    1. `03_script/04_graficos/grafico_mapa.R` — Crea gráfico mapa
