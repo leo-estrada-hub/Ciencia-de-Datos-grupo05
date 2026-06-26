@@ -2,21 +2,21 @@ library(tidyverse)
 
 base <- readRDS("02_input/tabla_rca.rds")
 
-#EMPIEZA LIMPIEZA
+#1 descargamos base
 
 base_limpia <- base %>%
   rename(empleo = empleo_registrado,
          sector = sector_agregado)
 
 
-#Cuantos valores tengo valor = 0?
+# Cuantos valores tenemos valor = 0?
 
 sum(base_limpia$vab == 0, na.rm = TRUE) #1791 valores con vab igual a 0
 mean(base_limpia$vab == 0, na.rm = TRUE)#lo que representa un 10% aprox de la columna vab
 sum(base_limpia$empleo == 0, na.rm = TRUE)#3503 valores con empleo igual a 0
 mean(base_limpia$empleo == 0, na.rm = TRUE)#lo que representa un 20% de la columna empleo
 
-#Como me queda la base cuando saco estos valores?
+#Como nos queda la base cuando sacamos estos valores?
 
 #sacando los sectores con valor 0 en empleo y vab queda base de 17092
 # 13887/17640= aprox 79% lo que implica depuracion del 21% de la base
@@ -25,7 +25,7 @@ mean(base_limpia$empleo == 0, na.rm = TRUE)#lo que representa un 20% de la colum
 #Lo cual extraerlos posteriormente para el logaritmo no afectaria 
 #significativamente la base.
 
-#Y si extraemos los servicios?
+#2 Y si extraemos los servicios?
 
 sectores_no_transables <- c(
   "Construcción",
@@ -40,6 +40,7 @@ sectores_no_transables <- c(
   "Servicios de hoteleria y restaurantes"
   )
 
+#3 unimos vector con base
 base_limpia <- base_limpia %>%
   filter(!sector %in% sectores_no_transables)
 nrow(base_limpia)
@@ -48,7 +49,7 @@ nrow(base_limpia)
 # Sin embargo en esta depuracion se eliminan los servicios que ensucian el 
 #analisis al desconcentrar el HHI y aumentar empleo de manera 
 #artificial, y por ende en la regresion dar siempre un resultado positivo.
-#apesar de la gran depuracion, queda una base grande, lo que genera una
+#a pesar de la gran depuracion, queda una base grande, lo que genera una
 #estadistica certera
 
 

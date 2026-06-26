@@ -10,8 +10,7 @@ instub <- '01_raw'
 
 ruta_csv <- file.path(instub,'14_Jurisdiccion_52sectores.xlsx')
 
-#LAS VARIABLES ESTAN EN MILLONES DE PESOS A PRECIOS DEL 2004
-#1 creo funcion para que itere con todas las provincias el mismo proceso
+#1 creamos funcion para que itere con todas las provincias el mismo proceso
 
 procesar_provincia <- function(sheet_name, nombre_provincia){
   read_xlsx(
@@ -44,14 +43,14 @@ procesar_provincia <- function(sheet_name, nombre_provincia){
       `2024` = `2024 (2)`
     ) %>%
     
-    #luego convierto estas columnas de <chr> a <dbl>   
+    #luego se convierte estas columnas de <chr> a <dbl>   
     
     mutate(
       `2023` = as.numeric(`2023`),
       `2024` = as.numeric(`2024`)
     ) %>%
     
-    #redondeo a 2 decimales todos los datos de la base   
+    #se redondea a 2 decimales todos los datos de la base   
     
     mutate(
       across(where(is.numeric), ~ round(.x, 2))
@@ -92,7 +91,7 @@ procesar_provincia <- function(sheet_name, nombre_provincia){
 }
 
 
-#2 uso funcion para cada provincia
+#2 usamos funcion para cada provincia
 
 vab_caba <- procesar_provincia("Ciudad_de_Buenos_Aires", "CABA")
 vab_ba <- procesar_provincia("Buenos_Aires", "Buenos Aires")
@@ -119,7 +118,7 @@ vab_sde <- procesar_provincia("Santiago_del_Estero", "Santiago del Estero")
 vab_tf <- procesar_provincia("Tierra_del_Fuego", "Tierra del Fuego")
 vab_tuc <- procesar_provincia("Tucuman", "Tucumán")
 
-#3 hago tabla que sume todas las provincias
+#3 hacemos tabla que sume todas las provincias
 
 vab_total <- bind_rows(
   vab_caba, vab_ba, vab_cat, vab_cha, vab_chu,
@@ -145,7 +144,7 @@ sapply(vab_total_horiz, class)  #provincia y sector_agregado character/ anio int
 glimpse(vab_total_horiz)        #que tiene aprox la tabla
 
 
-#guardo resultado para no correr toda la funcion
+#guardamos resultado para no correr toda la funcion
 
 saveRDS(vab_total_horiz, "02_input/vab_sector.rds")
 

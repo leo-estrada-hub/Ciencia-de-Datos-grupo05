@@ -1,6 +1,6 @@
 
 #creación de la variación del empleo 
-#Para el mapa 
+#para el mapa 
 
 library(tidyverse)
 library(sf)
@@ -78,12 +78,12 @@ theme_owid_map <- function(base_size = 13) { #configuración estándar del tema 
     )
 }
 
-#9 pongo funcion sobre mapa de Argentina
+#9 ponemos funcion sobre mapa de Argentina
 arg <- get_geo("ARGENTINA", level = "provincia") %>%
   add_geo_codes() %>%
   st_make_valid()
 
-#10 recorta areas del garfico para visualizar mejor
+#10 recortamos areas del grafico para visualizar mejor
 arg <- st_crop(arg, st_bbox(c(xmin = -90, xmax = -40, ymin = -55, ymax = -5),
                             crs = st_crs(arg)))
 

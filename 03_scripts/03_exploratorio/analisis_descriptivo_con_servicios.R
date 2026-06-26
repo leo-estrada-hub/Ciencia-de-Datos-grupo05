@@ -11,10 +11,10 @@ nrow(tabla_rca_ss)
 
 
 ###########################################################################
-# Y Qué ocurre con el HHI, vab y empleo si agrego los servicios?
+# Y qué ocurre con el HHI, vab y empleo si agrego los servicios?
 ###########################################################################
 
-#0 modifico nombres
+#0 modificamos nombres
 tabla_rca_ss <- tabla_rca_ss %>% 
   rename(sector = sector_agregado,
          empleo = empleo_registrado)
@@ -27,15 +27,16 @@ rca_promedio_ss <- tabla_rca_ss %>%
     .groups = "drop"
   )
 
-#1 creo tabla con sectores con rca promedio>1
+#1 creamos tabla con sectores con rca promedio>1
 sectores_vc_ss <- rca_promedio_ss %>%
   filter(rca_promedio > 1)
 
-#2 creo funcion total sectores
+#2 creamos funcion total sectores
 total_sectores_ss <- n_distinct(tabla_rca_ss$sector)
 
-#3 creo tabla con sectores con rca>1 en cada provincia y su porcentaja
 #=========================================================================>
+#3 creamos tabla con sectores con rca>1 en cada provincia y su porcentaje
+
 sectores_por_provincia_ss <- sectores_vc_ss %>%
   group_by(provincia) %>%
   summarise(cantidad_sectores = n_distinct(sector)) %>% 
@@ -52,12 +53,12 @@ sectores_por_provincia_ss %>%
 ############################################################################
 #1) Cómo evolucionó el empleo y vab en el sector con RCA>1? 
 
-#1 tabla que de los sectores con rca>1 me de todos los datos
+#1 tabla que de los sectores con rca>1 de todos los datos
 
 tabla_1_df_ss <- tabla_rca_ss %>%
   semi_join(sectores_vc_ss, by = c("provincia", "sector"))
 
-#2 uso años 2004 y 2024 de cada sector, y creo columnas con empleo y vab de ambos años
+#2 usamos años 2004 y 2024 de cada sector, y creamos columnas con empleo y vab de ambos años
 #resulta en tabla con variaciones de empleo y vab 
 
 sectores_vc_dif_ss <- tabla_1_df_ss %>%
@@ -75,7 +76,7 @@ sectores_vc_dif_ss <- tabla_1_df_ss %>%
       vab_2004 == 0, 0,paste0(round(100 * (vab_2024 / vab_2004 - 1), 2),"%")),
     crec_empleo = ifelse(empleo_2004 == 0,0,paste0(round(100 * (empleo_2024 / empleo_2004 - 1), 2),"%")))
 
-#3 recreo otra tabla a partir de la unificada para colapsar los sectores en 1
+#3 recreamos otra tabla a partir de la unificada para colapsar los sectores en 1
 tabla_provincias_ss <- tabla_1_df_ss %>%
   group_by(provincia, anio) %>%
   summarise(
@@ -115,7 +116,7 @@ vab_total_ss <- tabla_rca_ss %>%
   summarise(vab_total = sum(vab, na.rm = TRUE),
             .groups = "drop")
 
-#2 creo hhi 2024
+#2 creamos hhi 2024
 
 c_hhi_2024_ss <- tabla_rca_ss %>% 
   filter(anio == 2024) %>% 
@@ -138,7 +139,7 @@ vab_total_ss <- tabla_rca_ss %>%
   summarise(vab_total = sum(vab, na.rm = TRUE),
             .groups = "drop")
 
-#4 creo hhi 2004
+#4 creamos hhi 2004
 
 c_hhi_2004_ss <- tabla_rca_ss %>% 
   filter(anio == 2004) %>% 
@@ -166,7 +167,7 @@ tabla_hhi_ss <- c_hhi_2004_ss %>%
 ###########################################################################
 ##                 Creamos tabla de descripcion poblacional              ##
 
-#1 unifico tablas para ver cambios en hhi, y en empleo y vab
+#1 unificamos tablas para ver cambios en hhi, y en empleo y vab
 
 dif_vs_hhi_ss <- tabla_hhi_ss %>% 
   left_join(tabla_sec_crec_ss, by = "provincia") %>% 
@@ -186,7 +187,7 @@ dif_vs_hhi_ss <- tabla_hhi_ss %>%
     `Crec empleo` = crec_empleo,
     `Var HHI` = dif_hhi
   )
-#2 archivo tabla
+#2 archivamos tabla
 
 dif_vs_hhi_ss %>%
   gt() %>%

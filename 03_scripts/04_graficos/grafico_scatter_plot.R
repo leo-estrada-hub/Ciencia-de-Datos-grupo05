@@ -6,7 +6,7 @@ library(tidyverse)
 base <- readRDS("02_input/base_filtrada.rds")
 
  
-#1 filtro valores=0 y creamos dummy
+#1 filtramos valores=0 y creamos dummy
 
 base_plot <- base %>% 
   select(vab, empleo, rca) %>% #trabajamos solo con estas columnas 
@@ -20,10 +20,10 @@ base_plot <- base %>%
     dummy_rca = factor(
       if_else(rca >= 1, 1, 0),
       levels = c(0, 1),
-      labels = c("RCA < 1", "RCA ≥ 1") #creamos la dummie 
+      labels = c("RCA < 1", "RCA ≥ 1") #creamos la dummy 
     ))
 
-#2 grafico del scatterplot   
+#2 graficamos del scatterplot   
 g_rca <- ggplot( 
   base_plot,
   aes(

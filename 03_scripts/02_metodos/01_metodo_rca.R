@@ -2,7 +2,7 @@ library(tidyverse)
 
 tabla_rca <- readRDS("02_input/tabla_procesados_final.rds")
 
-# creo funcion de rca
+# creamos funcion de rca
 calculo_rca <- function(df){
   
   df %>%

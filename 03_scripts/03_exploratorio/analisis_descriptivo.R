@@ -5,7 +5,7 @@ library(tidyverse)
 library(gt)
 options(scipen = 999)
 
-# descargo base filtrada
+# descargamos base filtrada
 
 tabla_rca <- readRDS("02_input/base_filtrada.rds")
 nrow(tabla_rca)
@@ -22,16 +22,16 @@ rca_promedio <- tabla_rca %>%
 ###########################################################################
 #1) Cuantos RCA>1 hay?
 
-#1 creo tabla con sectores con rca promedio>1
+#1 creamos tabla con sectores con rca promedio>1
 sectores_vc <- rca_promedio %>%
   filter(rca_promedio > 1)
 
-#2 creo funcion total sectores
+#2 creamos funcion total sectores
 total_sectores <- n_distinct(tabla_rca$sector)
 
 #=============================================================================>
 
-#3 creo tabla con sectores con rca>1 en cada provincia y su porcentaja
+#3 creamos tabla con sectores con rca>1 en cada provincia y su porcentaja
 
 sectores_por_provincia <- sectores_vc %>%
   group_by(provincia) %>%
@@ -52,12 +52,12 @@ sectores_por_provincia %>%
 ###########################################################################
 #2) Cómo evolucionó el empleo y vab en el sector con RCA>1? 
 
-#1 tabla que de los sectores con rca>1 me de todos los datos
+#1 tabla que de los sectores con rca>1 nos de todos los datos
 
 tabla_1_df <- tabla_rca %>%
   semi_join(sectores_vc, by = c("provincia", "sector"))
 
-#2 uso años 2004 y 2024 de cada sector, y creo columnas con empleo y vab de ambos años
+#2 usamos años 2004 y 2024 de cada sector, y creamos columnas con empleo y vab de ambos años
 #resulta en tabla con variaciones de empleo y vab 
 
 sectores_vc_dif <- tabla_1_df %>%
@@ -78,7 +78,7 @@ sectores_vc_dif <- tabla_1_df %>%
       empleo_2004 == 0,0,paste0(round(100 * (empleo_2024 / empleo_2004 - 1), 2),"%")))
 
 
-#3 recreo otra tabla a partir de la unificada para colapsar los sectores en 1
+#3 recreamos otra tabla a partir de la unificada para colapsar los sectores en 1
 tabla_provincias <- tabla_1_df %>%
   group_by(provincia, anio) %>%
   summarise(
@@ -164,7 +164,7 @@ tabla_hhi <- c_hhi_2004 %>%
 #########################################################################
 ##                  Creacion de tabla descriptiva                     ##
 
-#1 unifico tablas para ver cambios en hhi, y en empleo y vab
+#1 unificamos tablas para ver cambios en hhi, y en empleo y vab
 
 dif_vs_hhi <- tabla_hhi %>% 
   left_join(tabla_sec_crec, by = "provincia") %>% 
@@ -185,7 +185,7 @@ dif_vs_hhi <- tabla_hhi %>%
     `Var HHI` = dif_hhi
   )
 
-#2 creo tabla
+#2 creamos tabla
 dif_vs_hhi %>%
   gt() %>%
   tab_header(
@@ -291,10 +291,10 @@ rca_max <- rca_promedio %>%
 #=========================================================================>
 
 ###########################################################################
-#5) Y Cómo evolucionó el empleo en el sector con mas RCA>1?
+#5) Y cómo evolucionó el empleo en el sector con mas RCA>1?
 
 
-#uno tabla de rca maximo con tabla rca
+#unimos tabla de rca maximo con tabla rca
 #1
 tabla_max_empleo_vc <- tabla_rca %>% 
   inner_join(
@@ -346,7 +346,7 @@ var_max_rca <- rca_max %>%
     `Empleo 2024` = empleo_2024,
     `Dif de empleo` = dif_empleo
   )
-#4 creo tabla
+#4 creamos tabla
 var_max_rca %>%
   gt() %>%
   tab_header(

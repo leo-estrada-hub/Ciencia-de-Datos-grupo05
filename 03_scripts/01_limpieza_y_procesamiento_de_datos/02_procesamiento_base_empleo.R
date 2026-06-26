@@ -1,5 +1,5 @@
 
-#procesamiento de base de empleo 
+# procesamiento de base de empleo 
 
 library(tidyverse)   
 library(readxl) 
@@ -7,14 +7,14 @@ library(janitor)
 
 options(scipen = 999)
 
-#1 uso canal raw y descargo base de datos cruda
+#1 usamos canal raw y descargamos base de datos cruda
 instub <- '01_raw'
 
 ruta_excel <- file.path(instub,'provinciales_serie_empleo_trimestral_2dig_5.xlsx')
 
 hojas <- excel_sheets(ruta_excel)
 
-#1 saco hojas innecesarias del excel
+#1 sacamos hojas innecesarias del excel
 hojas <- hojas[
   !(hojas %in%
       c("Carátula",
@@ -24,7 +24,7 @@ hojas <- hojas[
         "Descriptores de actividad"))
 ]
 
-#2 creo funcion para procesar base
+#2 creamos funcion para procesar base
 procesar_provincia <- function(sheet){
 
   datos <- read_xlsx(
@@ -144,7 +144,7 @@ empleo_total <-
     .groups="drop"
   )
 
-#5 renombro provincias para unificar con base VAB
+#5 renombramos provincias para unificar con base VAB
 empleo_total <-
   empleo_total %>%
   mutate(
@@ -162,12 +162,12 @@ empleo_total <-
       )
     )
 
-#6 cuantas variables hay antes de agruparlas
+#6 cuantas variables hay antes de agruparlas?
 nrow(empleo_total)     #51180  filas
 ncol(empleo_total)     #4  columnas
 
 
-#7 unifico con base vab
+#7 unificamos con base vab
 empleo_total <-
   empleo_total %>%
   filter(
@@ -249,7 +249,7 @@ empleo_total <- empleo_total %>%
  TRUE ~ sector_original 
     ))
 
-#8 acomodo bases para posterior orden
+#8 acomodamos bases para posterior orden
 empleo_total <-
   empleo_total %>%
   group_by(
@@ -275,7 +275,7 @@ empleo_total <-
     anio
   )
 
-#9 cuantas variables hay despues de agruparlas
+#9 cuantas variables hay despues de agruparlas?
 nrow(empleo_total)           #21168  filas
 ncol(empleo_total)           #4  columnas
 sum(is.na(empleo_total))     #sin NAs

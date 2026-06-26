@@ -5,13 +5,13 @@ library(sandwich)   # vcovHC() — errores robustos
 library(car)        # vif() — prueba de hipotesis conjunta 
 library(gt)         # para mejorar visualizacion de tablas
 library(webshot2)   #para la conversion de html a png
-options(scipen = 999) #evito notacion cientifica
-theme_set(theme_minimal(base_size = 12)) #grafico por defecto para analizar regresiones
+options(scipen = 999) #evita notacion cientifica
+theme_set(theme_minimal(base_size = 12)) #grafica por defecto para analizar regresiones
 
 base <- readRDS('02_input/base_filtrada.rds')
 base_con_ss <- readRDS('02_input/tabla_rca.rds')
 
-#0. filtro valores =0 para cuando use logaritmo
+#0. filtramos valores =0 para cuando use logaritmo
 base <- base %>%
   filter(
     !is.na(vab),
@@ -31,7 +31,7 @@ base_con_ss <- base_con_ss %>%
 nrow(base_con_ss)
 
 
-#0. filtro la base con datos relevantes para regresion
+#0. filtramos la base con datos relevantes para regresion
 
 base_regresion <- base %>% 
   select(vab,empleo,rca)
@@ -66,7 +66,7 @@ coeftest(mod_simple_log, vcov = vcovHC(mod_simple_log, type = "HC1"))
 #sin embargo los errores casi no se mueven y siguen dando
 #significativos
 
-#verifico resumen de ambos modelos (sobre todo BIC y AIC)
+#verificamos resumen de ambos modelos (sobre todo BIC y AIC)
 bind_rows(
   glance(mod_simple_nivel) |> mutate(modelo = "Niveles"),
   glance(mod_simple_log)   |> mutate(modelo = "logaritmica")
@@ -74,11 +74,11 @@ bind_rows(
   select(modelo, r.squared, adj.r.squared, sigma, AIC, BIC)
 
 #ambos coeficientes dan significativos, pero modelo con log explica aun mas
-#R^2 ajustado 0,6976 vs 0,7508. Ademas AIC y BIC dan mas chicos. Y el 
+#R^2 ajustado 0,698 vs 0,751. Ademas AIC y BIC dan mas chicos. Y el 
 #error estandar del log da 1.
 #por ende elijo modelo con log.
 
-#4.añado dummie RCA (que es binaria; 0 o 1)
+#4.añadimos dummie RCA (que es binaria; 0 o 1)
 
 #creo dummy para rca>1 y agrego a base
 base_regresion <- base_regresion %>%
@@ -126,14 +126,13 @@ bind_rows(
 
 #claramente el modelo completo es el que mejor ajusta
 
-
-#veo cuanto me da de multicolinealidad
+#veo cuanto da de multicolinealidad
 vif(modelo_completo)
-#la colinealidad se infla fuertemnete, lo que es logico al agregar la interaccion
+#la colinealidad se infla fuertemente, lo que es logico al agregar la interaccion.
 #no es preocupante porque el coefiente da muy significativo y ademas no se vuela
 #el error estandar. Ademas, el modelo sin interaccion daba colinealidad baja
 #implicando que por el unico factor que se infla es por la interaccion
-#razon por la que no es preocupante esta inflacion
+#razon por la que no es preocupante esta inflacion.
 
 #Visualización de coeficientes con gt
 tabla_regresion <- tidy(modelo_completo) %>%
@@ -175,7 +174,7 @@ gtsave(
   "04_output/tablas/tabla_regresion.png"
 )
 
-#Visualización de estadística con gt
+#6 Visualización de estadística con gt
 
 tabla_estadisticas_reg <- glance(modelo_completo)%>% #seleccionamos los datos a visualizar
   select(
@@ -221,15 +220,16 @@ gtsave(tabla_estadisticas_reg,
 #Será con el fin de ver qué tanto cambia con TODOS los sectores de la economía
 #############################################################################
 
+#1 creamos y renombro base con servicios
 base_con_ss <- base_con_ss %>% 
   rename(empleo = empleo_registrado)
 
-#filtro variables importantes
+#2 filtramos variables importantes
 base_con_ss<- base_con_ss %>% 
   select(vab,empleo,rca)
 
 
-#creo dummy
+#3 creamos dummy
 base_con_ss <- base_con_ss %>%
   mutate(dummy_rca = if_else(rca > 1, 1, 0))
 
@@ -238,22 +238,23 @@ modelo_completo_con_ss <- lm(
   data = base_con_ss)
 summary(modelo_completo_con_ss)
 
-#comparo vs modelo sin servicios
+#4 comparamos vs modelo sin servicios
 bind_rows(
   glance(modelo_completo_con_ss)   |> mutate(modelo = "con servicios"),
   glance(modelo_completo)   |> mutate(modelo = "sin servicios")
 ) |>
   select(modelo, r.squared, adj.r.squared, sigma, AIC, BIC)
 
-#veo cuanto me da de multicolinealidad
+#vemos cuanto me da de multicolinealidad
 vif(modelo_completo_con_ss)
 
-#busco evidencia de heterocedasticidad
+#buscamos evidencia de heterocedasticidad
 bptest(modelo_completo_con_ss)       
-#la hay, uso errores robustos para ver cuanto se modifica el error
+#la hay, se usan errores robustos para ver cuanto se modifica el error
 coeftest(modelo_completo_con_ss, vcov = vcovHC(modelo_completo_con_ss, type = "HC1"))
 #no cambia significatividad, y apenas cambian errores
 
+#5 visualizamos scatter con servicio
 ggplot(
   base_con_ss,
   aes(
