@@ -22,7 +22,7 @@ Buscar las elasticidades entre sectores con ventaja comparativa y su empleo dire
 1. Limpieza y reestructuración de las bases raw hacia un formato que unifique años y variables (formatos heterogéneos entre bases por diferentes desagregaciones y nombres).
 2. Construcción de la variable RCA y posterior filtro de servicios para que queden los sectores de producción de bienes transables.
 3. Filtro de sectores con ventaja comparativa para análisis descriptivo (HHI, diferencias de crecimiento, casos especiales) e inferencial (regresión, uso de t-test para comparar medias).
-4. Visualizaciones del crecimiento en empleo de los sectores con ventaja comparativa en cada provincia, regresión que diferencia relación empleo-vab con y sin ventaja comparativa, y tablas que muestren lo encontrado en el análisis descriptivo y la regresión.
+4. Visualizaciones del crecimiento en empleo de los sectores con ventaja comparativa en cada provincia; regresión que diferencia relación empleo-vab con y sin ventaja comparativa; y tablas que muestren lo encontrado en el análisis descriptivo y la regresión.
 
 
    
