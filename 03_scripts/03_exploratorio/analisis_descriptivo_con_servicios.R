@@ -200,7 +200,7 @@ dif_vs_hhi_ss %>%
     zoom = 2,
     expand = 20
   )
-
+print(dif_vs_hhi_ss, n= Inf)
 #############################################################################
 ##                     Creamos tabla de inferencia                           ##
 
@@ -281,8 +281,7 @@ tabla_resumen_ss %>%
     zoom = 2,
     expand = 20
   )
-
-
+print(tabla_resumen_ss, n = Inf)
 
 
 

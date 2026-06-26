@@ -198,7 +198,7 @@ dif_vs_hhi %>%
     zoom = 2,
     expand = 20
   )
-
+print(dif_vs_hhi, n = Inf)
 ###########################################################################
 ##                    Creacion de tabla de inferencia                     ##
 
@@ -277,6 +277,7 @@ tabla_resumen %>%
     zoom = 2,
     expand = 20
   )
+print(tabla_resumen, n= Inf)
 
 ###########################################################################
 #4) Cual es el RCA>1 mas alto en cada provincia?
@@ -323,7 +324,7 @@ dif_empleo_vc_max <- tabla_max_empleo_vc %>%
 var_max_rca <- rca_max %>% 
   left_join(dif_empleo_vc_max, by = c("provincia", "sector")) %>%
   mutate(
-    sector = recode(
+    sector = dplyr::recode(
       sector,
       "Producción de madera y fabricación de productos de madera y corcho, excepto muebles; fabricación de artículos de paja y de materiales trenzables" =
         "Producción de madera y fabricación de productos de madera"
@@ -358,6 +359,7 @@ var_max_rca %>%
     zoom = 2,
     expand = 20
     )
+print(var_max_rca, n = Inf) 
 
 
 
